@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="FontParser.cpp">
+      <Filter>Application\Parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="FontReader.cpp">
+      <Filter>Application\Parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="FontStructs.cpp">
+      <Filter>Application\Parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="ByteReader.cpp">
+      <Filter>Application\Parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="ByteWriter.cpp">
+      <Filter>Application\Parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseApplication.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionUtils.cpp">
+      <Filter>Framework\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawUtils.cpp">
+      <Filter>Framework\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Structs.cpp">
+      <Filter>Framework\Structs</Filter>
+    </ClCompile>
+    <ClCompile Include="FontRenderer.cpp">
+      <Filter>Application\Rendering</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Timer.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.h">
+      <Filter>Framework\Singleton</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="FontParser.h">
+      <Filter>Application\Parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="FontReader.h">
+      <Filter>Application\Parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="FontStructs.h">
+      <Filter>Application\Parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="ByteReader.h">
+      <Filter>Application\Parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="ByteWriter.h">
+      <Filter>Application\Parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseApplication.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionUtils.h">
+      <Filter>Framework\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawUtils.h">
+      <Filter>Framework\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Structs.h">
+      <Filter>Framework\Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="FontRenderer.h">
+      <Filter>Application\Rendering</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Framework">
+      <UniqueIdentifier>{7e81cd1c-580e-4d45-b002-84ecb4818051}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Singleton">
+      <UniqueIdentifier>{190c6699-1f05-495e-aeec-7839626cd46f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application">
+      <UniqueIdentifier>{1761cc5d-5cd9-4b61-b94c-478b592182e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Utils">
+      <UniqueIdentifier>{5195a928-b3cf-4849-ab36-590c4b8330ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Structs">
+      <UniqueIdentifier>{d1ce2ea1-b4d6-4e3a-8ff6-65344bb21ce2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Parsing">
+      <UniqueIdentifier>{9e489128-1bf4-4926-9a07-b107d8fd48da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Rendering">
+      <UniqueIdentifier>{233c7f20-9dee-4347-a8bf-da058ded2d0d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
