@@ -2,20 +2,20 @@
 
 #include <stdexcept>
 
-#include <SDL.h>
-#include <SDL_opengl.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
 
 #include "Timer.h"
 
 #if defined DEBUG || _DEBUG
 #include <iostream>
-void DLog(const std::string& message)
+static void DLog(const std::string& message)
 {
 	std::cout << message;
 }
 #else
 void DLog(const std::string& message){}
-#endif // DEBUG || _DEBUG
+#endif
 
 BaseApplication::BaseApplication(const std::string& title, int width, int height)
 	: m_pWindow{ nullptr }
@@ -50,6 +50,13 @@ BaseApplication::BaseApplication(const std::string& title, int width, int height
 		throw std::runtime_error{ std::string{ "GlContext Error: " } + SDL_GetError() };
 	}
 
+	// Initialize GLEW after creating the OpenGL context
+	glewExperimental = GL_TRUE;
+	if (glewInit() != GLEW_OK)
+	{
+		throw std::runtime_error{ std::string{ "Failed to initialize glew" } };
+	}
+
 	DLog("OpenGL version: " + std::string{ reinterpret_cast<const char*>(glGetString(GL_VERSION)) } + "\n");
 	DLog("GLSL version: " + std::string{ reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION)) } + "\n");
 
@@ -71,9 +78,9 @@ BaseApplication::BaseApplication(const std::string& title, int width, int height
 	// Disable depth test due to 2D environment
 	glDisable(GL_DEPTH_TEST);
 
-	// Enable color blending and use alpha blending (only needed when drawing with transparency)
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	// Enable color blending and use alpha blending
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// Create application
 	m_Application = std::make_unique<Application>(width, height);
@@ -106,8 +113,8 @@ void BaseApplication::Run()
 
 		m_Application->Update();
 
-		glClearColor(0.f, 0.f, 0.f, 1.f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClearColor(0.15f, 0.15f, 0.15f, 1.f);
+		glClear(GL_COLOR_BUFFER_BIT /*| GL_DEPTH_BUFFER_BIT*/);
 
 		m_Application->Render();
 

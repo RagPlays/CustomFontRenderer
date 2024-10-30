@@ -2,7 +2,7 @@
 //#include <vld.h>
 #endif
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include "BaseApplication.h"
 
 int SDL_main(int argv, char** args)

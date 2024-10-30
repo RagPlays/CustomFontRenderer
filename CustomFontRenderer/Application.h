@@ -1,9 +1,9 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include "Camera.h"
 #include "FontParser.h"
 #include "FontRenderer.h"
+#include "Shader.h"
 
 class Application final
 {
@@ -20,10 +20,13 @@ public:
 	void Update();
 	void Render() const;
 
+	void UpdateCamera();
+
 private:
 
 	FontParser m_FontParser;
 	FontRenderer m_FontRenderer;
+	Shader m_Shader;
 
 };
 

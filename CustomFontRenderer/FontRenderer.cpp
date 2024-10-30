@@ -1,13 +1,18 @@
 #include "FontRenderer.h"
 
-#include <SDL_opengl.h>
+#include <cstdint>
+#include <string>
+#include <vector>
+#include <SDL2/SDL_opengl.h>
 
+#include "Structs.h"
 #include "FontParser.h"
 #include "DrawUtils.h"
 #include "CollisionUtils.h"
 #include "Camera.h"
+#include "FontStructs.h"
 
-void getViewportDimensions(int& width, int& height)
+static void GetViewportDimensions(int& width, int& height)
 {
 	// Get the viewport dimensions
 	GLint viewport[4];
@@ -56,7 +61,6 @@ void FontRenderer::Render() const
 		DrawGlyph(glyph, offset);
 		offset.x += letterSpacing;
 	}*/
-
 }
 
 void FontRenderer::LoadTextGlyphs()
@@ -76,49 +80,43 @@ void FontRenderer::DrawGlyph(const GlyphData& glyphData, const Point2i& offset) 
 	const std::vector<uint16_t>& contourEndIndices{ glyphData.contourEndIndices };
 	const std::vector<Point2i>& points{ glyphData.points };
 
-	const Point2f& camPos{ Camera::Get().GetPosition() };
-	int width, height;
-	getViewportDimensions(width, height);
+	//const Point2f& camPos{ Camera::Get().GetPosition() };
+	//int width, height;
+	//GetViewportDimensions(width, height);
+	//const Recti cameraRect{ static_cast<Point2i>(camPos), width, height };
 
-	const Recti cameraRect{ static_cast<Point2i>(camPos), width, height };
 	const Recti glyphBox{ Point2i{ glyphData.xMin, glyphData.yMin }, glyphData.xMax - glyphData.xMin, glyphData.yMax - glyphData.yMin };
 
-	if (!CollisionUtils::IsOverlapping(cameraRect, Recti{ Point2i{glyphBox.x, glyphBox.y} + offset, glyphBox.width, glyphBox.height })) return;
-
-	glPushMatrix();
+	//if (!CollisionUtils::IsOverlapping(cameraRect, Recti{ Point2i{glyphBox.x, glyphBox.y} + offset, glyphBox.width, glyphBox.height })) return;
+	
+	// Draw Lines
+	DrawUtils::SetLineThickness(2.f);
+	int contourStartIdx{};
+	for (size_t contourEndIdx{}; contourEndIdx < contourEndIndices.size(); ++contourEndIdx)
 	{
-		glTranslatef(static_cast<float>(offset.x), static_cast<float>(offset.y), 0);
+		DrawUtils::SetColor(s_ContourLineColors[contourEndIdx % s_ContourLineColors.size()]);
 
-		// Draw Lines
-		DrawUtils::SetLineThickness(2.f);
-		int contourStartIdx{};
-		for (size_t contourEndIdx{}; contourEndIdx < contourEndIndices.size(); ++contourEndIdx)
+		const uint16_t& currentEndIdx{ contourEndIndices[contourEndIdx] };
+
+		const size_t numPointsInContour{ static_cast<size_t>(currentEndIdx - contourStartIdx + 1) };
+		const std::vector<Point2i> contourPoints(points.begin() + contourStartIdx, points.begin() + contourStartIdx + numPointsInContour);
+
+		for (size_t pointIdx{}; pointIdx < numPointsInContour; ++pointIdx)
 		{
-			DrawUtils::SetColor(s_ContourLineColors[contourEndIdx % s_ContourLineColors.size()]);
-
-			const uint16_t& currentEndIdx{ contourEndIndices[contourEndIdx] };
-
-			const size_t numPointsInContour{ static_cast<size_t>(currentEndIdx - contourStartIdx + 1) };
-			const std::vector<Point2i> contourPoints(points.begin() + contourStartIdx, points.begin() + contourStartIdx + numPointsInContour);
-
-			for (size_t pointIdx{}; pointIdx < numPointsInContour; ++pointIdx)
-			{
-				const Point2i& point1{ contourPoints[pointIdx] };
-				const Point2i& point2{ contourPoints[(pointIdx + 1) % numPointsInContour] };
-				DrawUtils::Line(point1, point2);
-			}
-
-			contourStartIdx = currentEndIdx + 1;
+			const Point2i& point1{ contourPoints[pointIdx] };
+			const Point2i& point2{ contourPoints[(pointIdx + 1) % numPointsInContour] };
+			DrawUtils::Line(point1, point2);
 		}
 
-		// Draw Points
-		DrawUtils::SetPointSize(2.f);
-		DrawUtils::SetColor(Color4f::white);
-		DrawUtils::Points(points);
-
-		// Draw GlyphBox
-		DrawUtils::Rectangle(glyphBox);
+		contourStartIdx = currentEndIdx + 1;
 	}
-	glPopMatrix();
+
+	// Draw Points
+	DrawUtils::SetPointSize(5.f);
+	DrawUtils::SetColor(Color4f::white);
+	DrawUtils::Points(points);
+
+	// Draw GlyphBox
+	DrawUtils::Rectangle(glyphBox);
 
 }

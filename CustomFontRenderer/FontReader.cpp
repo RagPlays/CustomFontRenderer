@@ -15,6 +15,16 @@ std::string FontReader::ReadTag()
 	return std::string(dataVec.begin(), dataVec.end());
 }
 
+double FontReader::ReadFixedPoint2Dot14()
+{
+	return UInt16ToFixedPoint2Dot14(ReadUInt16());
+}
+
+double FontReader::UInt16ToFixedPoint2Dot14(uint16_t raw)
+{
+	return static_cast<uint16_t>(raw) / static_cast<double>(1 << 14);
+}
+
 uint8_t FontReader::ReadUint8()
 {
 	return m_ByteReader.ReadUInt8();

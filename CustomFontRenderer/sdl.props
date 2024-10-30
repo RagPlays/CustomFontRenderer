@@ -28,13 +28,12 @@
         $(SolutionDir)Libraries\SDL2_ttf\include;
         $(SolutionDir)Libraries\SDL2_image\include;
         $(SolutionDir)Libraries\SDL2_mixer\include;
-        $(SolutionDir)Libraries\glm;
         %(AdditionalIncludeDirectories)
       </AdditionalIncludeDirectories>
     </ClCompile>
     <PostBuildEvent>
       <Command>
-        xcopy "$(SolutionDir)Libraries\SDL2\lib\$(PlatformTarget)\SDL2.dll" "$(OutputPath)" /R /Y
+        xcopy "$(SolutionDir)Libraries\SDL2\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
         xcopy "$(SolutionDir)Libraries\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
         xcopy "$(SolutionDir)Libraries\SDL2_image\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
         xcopy "$(SolutionDir)Libraries\SDL2_mixer\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y

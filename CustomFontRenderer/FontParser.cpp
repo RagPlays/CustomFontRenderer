@@ -1,18 +1,27 @@
 #include <cassert>
+#include <cstdint>
+#include <string>
+#include <type_traits>
+#include <utility>
+#include <vector>
+#include <stdexcept>
 
 #include "FontParser.h"
+#include "ByteReader.h"
+#include "FontStructs.h"
+#include "Structs.h"
 
 #if defined DEBUG || defined _DEBUG
-#define PARSELOGGING
+//#define PARSELOGGING
 	#ifdef PARSELOGGING
 		#include <iostream>
 		#define DEFAULTDATALOGGING
-		//#define GLYPHLOCATIONLOGGING
-		//#define FLAGLOGGING
+		#define GLYPHLOCATIONLOGGING
+		#define FLAGLOGGING
 		#ifdef FLAGLOGGING
 			#define DETAILEDFLAGLOGGING
 		#endif
-		//#define GLYPHDATALOGGING
+		#define GLYPHDATALOGGING
 		#ifdef GLYPHDATALOGGING
 			#define INSTRUCTIONLOGGING
 			#define ENDOFCOUNTOURLOGGING
@@ -191,7 +200,7 @@ void FontParser::ReadUniCodeToIndex()
 
 	assert(cmapSubtableOffset != 0);
 
-	m_FontReader.SetPosition(cmapTableLocation + cmapSubtableOffset);
+	m_FontReader.SetPosition(cmapTableLocation + static_cast<size_t>(cmapSubtableOffset));
 
 	const uint16_t format{ m_FontReader.ReadUInt16() };
 	bool hasMissingCharGlyph{ false };
@@ -201,7 +210,30 @@ void FontParser::ReadUniCodeToIndex()
 		assert(false);
 	}
 
-	if (format == 4)
+	if (format == 12)
+	{
+		const uint16_t reserved{ m_FontReader.ReadUInt16() };
+		const uint32_t length{ m_FontReader.ReadUInt32() };
+		const uint32_t language{ m_FontReader.ReadUInt32() };
+		const uint32_t numGroups{ m_FontReader.ReadUInt32() };
+
+		for (uint32_t groupIdx{}; groupIdx < numGroups; groupIdx++)
+		{
+			const uint32_t startCharCode{ m_FontReader.ReadUInt32() };
+			const uint32_t endCharCode{ m_FontReader.ReadUInt32() };
+			const uint32_t startGlyphIndex{ m_FontReader.ReadUInt32() };
+
+			const uint32_t numChars{ static_cast<uint32_t>(endCharCode - startCharCode + 1) };
+			for (uint32_t charCodeOffset{}; charCodeOffset < numChars; charCodeOffset++)
+			{
+				const uint32_t charCode{ startCharCode + charCodeOffset };
+				const uint32_t glyphIndex{ startGlyphIndex + charCodeOffset };
+
+				m_GlyphUnicodeToIndexLookup.insert(std::make_pair(charCode, glyphIndex));
+			}
+		}
+	}
+	else if (format == 4)
 	{
 		const uint16_t subtableLength{ m_FontReader.ReadUInt16() };
 		const uint16_t language{ m_FontReader.ReadUInt16() };
@@ -255,34 +287,40 @@ void FontParser::ReadUniCodeToIndex()
 			idRangeOffset = IdRange{ readLoc, offset };
 		}
 
-		for (int codeIdx{}; codeIdx < startCodes.size(); ++codeIdx)
+		for (size_t codeIdx{}; codeIdx < startCodes.size(); ++codeIdx)
 		{
-		}
+			const uint16_t endCode{ endCodes[codeIdx] };
+			uint16_t currCode{ startCodes[codeIdx] };
 
-	}
-	else if (format == 12)
-	{
-		const uint16_t reserved{ m_FontReader.ReadUInt16() };
-		const uint32_t length{ m_FontReader.ReadUInt32() };
-		const uint32_t language{ m_FontReader.ReadUInt32() };
-		const uint32_t numGroups{ m_FontReader.ReadUInt32() };
-
-		for (uint32_t groupIdx{}; groupIdx < numGroups; groupIdx++)
-		{
-			const uint32_t startCharCode{ m_FontReader.ReadUInt32() };
-			const uint32_t endCharCode{ m_FontReader.ReadUInt32() };
-			const uint32_t startGlyphIndex{ m_FontReader.ReadUInt32() };
-
-			const uint32_t numChars{ static_cast<uint32_t>(endCharCode - startCharCode + 1) };
-			for (uint32_t charCodeOffset{}; charCodeOffset < numChars; charCodeOffset++)
+			while (currCode < endCode)
 			{
-				const uint32_t charCode{ startCharCode + charCodeOffset };
-				const uint32_t glyphIndex{ startGlyphIndex + charCodeOffset };
+				uint32_t glyphIndex = 0;
 
-				m_GlyphUnicodeToIndexLookup[charCode] = glyphIndex;
-				//m_GlyphUnicodeToIndexLookup.insert(charCode, glyphIndex);
-				
-				//hasReadMissingCharGlyph |= glyphIndex == 0;
+				// If idRangeOffset is 0, the glyph index can be calculated direclty
+				if (idRangeOffsets[codeIdx].offset == 0)
+				{
+					glyphIndex = (currCode + idDeltas[codeIdx]) % 65536;
+				}
+				// Otherwise, glyph index needs to be looked up from an array
+				else
+				{
+					const size_t readerLocOld{ m_FontReader.GetPosition() };
+					const uint32_t rangeOffsetLocation{ static_cast<uint32_t>(idRangeOffsets[codeIdx].readLoc + idRangeOffsets[codeIdx].offset) };
+					const uint32_t glyphIdxArrayLocation{ static_cast<uint32_t>(2 * (currCode - startCodes[codeIdx]) + rangeOffsetLocation) };
+
+					m_FontReader.SetPosition(glyphIdxArrayLocation);
+					glyphIndex = m_FontReader.ReadUInt16();
+
+					if (glyphIndex != 0)
+					{
+						glyphIndex = (glyphIndex + idDeltas[codeIdx] % 65535);
+					}
+
+					m_FontReader.SetPosition(readerLocOld);
+				}
+
+				m_GlyphUnicodeToIndexLookup.insert(std::make_pair(currCode, glyphIndex));
+				++currCode;
 			}
 		}
 	}
@@ -304,9 +342,9 @@ GlyphData FontParser::ReadGlyph(uint32_t glyphPos)
 
 GlyphData FontParser::ReadSimpleGlyph(uint32_t glyphPos)
 {
-	GlyphData glyphData{};
-
 	constexpr int repeatBit = 3;
+
+	GlyphData glyphData{};
 
 	m_FontReader.SetPosition(static_cast<size_t>(glyphPos));
 
@@ -339,12 +377,13 @@ GlyphData FontParser::ReadSimpleGlyph(uint32_t glyphPos)
 
 	// Flags
 	std::vector<uint8_t> allFlags{};
-	allFlags.resize(numPoints);
+	allFlags.reserve(numPoints);
 
 	for (int flagIdx{}; flagIdx < numPoints; ++flagIdx)
 	{
 		const uint8_t flag{ m_FontReader.ReadUint8() };
-		allFlags[flagIdx] = flag;
+		allFlags.emplace_back(flag);
+		//allFlags[flagIdx] = flag;
 
 		if (ByteReader::IsBitSet(flag, repeatBit))
 		{
@@ -352,7 +391,8 @@ GlyphData FontParser::ReadSimpleGlyph(uint32_t glyphPos)
 			for (uint8_t flagCopyIdx{}; flagCopyIdx < numOfCopies; ++flagCopyIdx)
 			{
 				++flagIdx;
-				allFlags[flagIdx] = flag;
+				allFlags.emplace_back(flag);
+				//allFlags[flagIdx] = flag;
 			}
 		}
 	}
@@ -374,6 +414,7 @@ GlyphData FontParser::ReadSimpleGlyph(uint32_t glyphPos)
 	ParseLog("\n|glyf Data|\n");
 	ParseLog("\n");
 	ParseLog("-glyph description-\n");
+	ParseLog("Glyph position: " + std::to_string(glyphPos) + "\n");
 	ParseLog("Number of contours: " + std::to_string(contourCount) + "\n");
 	ParseLog("Minimum x for coordinate data: " + std::to_string(glyphData.xMin) + "\n");
 	ParseLog("Minimum y for coordinate data: " + std::to_string(glyphData.yMin) + "\n");
@@ -426,7 +467,110 @@ GlyphData FontParser::ReadSimpleGlyph(uint32_t glyphPos)
 
 GlyphData FontParser::ReadCompoundGlyph(uint32_t glyphPos)
 {
-	return m_GlyphsData.at(0); // for now
+	return m_GlyphsData.at(0);
+
+	m_FontReader.SetPosition(glyphPos);
+	m_FontReader.SkipBytes(2); // normally contour count
+
+	// Minimum x for coordinate data
+	const int16_t xMin{ m_FontReader.ReadInt16() };
+	// Minimum y for coordinate data
+	const int16_t yMin{ m_FontReader.ReadInt16() };
+	// Maximum x for coordinate data
+	const int16_t xMax{ m_FontReader.ReadInt16() };
+	// Maximum y for coordinate data
+	const int16_t yMax{ m_FontReader.ReadInt16() };
+
+	std::vector<Point2i> allPoints{};
+	std::vector<uint16_t> allContourEndIndices{};
+
+	while (true)
+	{
+		const auto [componentGlyph, hasMoreGlyphs]{ ReadNextComponentGlyph(glyphPos) };
+
+		const size_t offset{ allPoints.size() };
+
+		allContourEndIndices.reserve(allContourEndIndices.size() + componentGlyph.contourEndIndices.size());
+		for (const uint16_t& endIndex : componentGlyph.contourEndIndices)
+		{
+			allContourEndIndices.emplace_back(static_cast<uint16_t>(endIndex + offset));
+		}
+		allPoints.insert(allPoints.end(), componentGlyph.points.begin(), componentGlyph.points.end());
+
+		if (!hasMoreGlyphs) break;
+	}
+	
+	return GlyphData{ xMin, xMax, yMin, yMax, allContourEndIndices, allPoints };
+}
+
+std::pair<GlyphData, bool> FontParser::ReadNextComponentGlyph(uint32_t glyphPos)
+{
+	const uint16_t flag{ m_FontReader.ReadUInt16() };
+	const uint16_t glyphIndex{ m_FontReader.ReadUInt16() };
+
+	const uint32_t componentGlyphLocation{ m_GlyphLocations[glyphIndex] };
+	if (componentGlyphLocation == glyphPos) return { GlyphData{}, false };
+
+	const bool argsAreXYValues{ ByteReader::IsBitSet(flag, 1) };
+	if (!argsAreXYValues) throw std::runtime_error{ "TODO: Args1&2 are point indices to be matched, rather than offsets" };
+
+	const bool argsAre2Bytes{ ByteReader::IsBitSet(flag, 0) };
+	const bool isSingleScaleValue{ ByteReader::IsBitSet(flag, 3) };
+	const bool isMoreComponentsAfterThis{ ByteReader::IsBitSet(flag, 5) };
+	const bool isXAndYScale{ ByteReader::IsBitSet(flag, 6) };
+	const bool is2x2Matrix{ ByteReader::IsBitSet(flag, 7) };
+	const bool hasInstructions{ ByteReader::IsBitSet(flag, 8) };
+	const bool useThisComponentMetrics{ ByteReader::IsBitSet(flag, 9) };
+	const bool componentsOverlap{ ByteReader::IsBitSet(flag, 10) };
+
+	const int arg1{ argsAre2Bytes ? m_FontReader.ReadInt16() : m_FontReader.ReadInt8() };
+	const int arg2{ argsAre2Bytes ? m_FontReader.ReadInt16() : m_FontReader.ReadInt8() };
+
+	const double offsetX = static_cast<double>(arg1);
+	const double offsetY = static_cast<double>(arg2);
+
+	double iHat_x{ 1.0 };
+	double iHat_y{ 0.0 };
+	double jHat_x{ 0.0 };
+	double jHat_y{ 1.0 };
+
+	if (isSingleScaleValue)
+	{
+		iHat_x = m_FontReader.ReadFixedPoint2Dot14();
+		jHat_y = iHat_x;
+	}
+	else if (isXAndYScale)
+	{
+		iHat_x = m_FontReader.ReadFixedPoint2Dot14();
+		jHat_y = m_FontReader.ReadFixedPoint2Dot14();
+	}
+	else if (is2x2Matrix)
+	{
+		iHat_x = m_FontReader.ReadFixedPoint2Dot14();
+		iHat_y = m_FontReader.ReadFixedPoint2Dot14();
+		jHat_x = m_FontReader.ReadFixedPoint2Dot14();
+		jHat_y = m_FontReader.ReadFixedPoint2Dot14();
+	}
+
+	const size_t currentReadLoc{ m_FontReader.GetPosition() };
+	GlyphData simpleGlyph{ ReadGlyph(glyphIndex) };
+	m_FontReader.SetPosition(currentReadLoc);
+
+	auto TransformPoint = [&](double x, double y) -> std::pair<double, double>
+		{
+		double xPrime = iHat_x * x + jHat_x * y + offsetX;
+		double yPrime = iHat_y * x + jHat_y * y + offsetY;
+		return { xPrime, yPrime };
+		};
+
+	for (auto& point : simpleGlyph.points)
+	{
+		auto [xPrime, yPrime] = TransformPoint(point.x, point.y);
+		point.x = static_cast<int>(xPrime);
+		point.y = static_cast<int>(yPrime);
+	}
+
+	return { simpleGlyph, isMoreComponentsAfterThis };
 }
 
 std::vector<int> FontParser::ParseCoordinates(const std::vector<uint8_t>& allFlags, bool readingX)

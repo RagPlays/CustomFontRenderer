@@ -1,7 +1,9 @@
 #ifndef FONTREADER_H
 #define FONTREADER_H
 
+#include <vector>
 #include <string>
+#include <cstdint>
 
 #include "ByteReader.h"
 
@@ -18,6 +20,9 @@ public:
 	FontReader& operator=(FontReader&& other) noexcept = delete;
 
 	std::string ReadTag();
+
+	double ReadFixedPoint2Dot14();
+	static double UInt16ToFixedPoint2Dot14(uint16_t raw);
 
 	uint8_t ReadUint8();
 	uint16_t ReadUInt16();

@@ -1,5 +1,12 @@
 #include "ByteReader.h"
 
+#include <cassert>
+#include <cstdint>
+#include <iosfwd>
+#include <stdexcept>
+#include <string>
+#include <vector>
+
 ByteReader::ByteReader(const std::string& filePath)
     : m_File{ filePath, std::ios::binary }
     , m_FilePath{ filePath }
@@ -168,5 +175,12 @@ int32_t ByteReader::SwapEndianness(int32_t value)
 
 bool ByteReader::IsBitSet(uint8_t byte, size_t bitIdx)
 {
+    assert(bitIdx < sizeof(byte) * 8);
     return ((byte >> bitIdx) & 1) == 1;
+}
+
+bool ByteReader::IsBitSet(uint16_t twobyte, size_t bitIdx)
+{
+    assert(bitIdx < sizeof(twobyte) * 8);
+    return ((twobyte >> bitIdx) & 1) == 1;
 }

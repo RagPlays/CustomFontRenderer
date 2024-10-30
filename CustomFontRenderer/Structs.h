@@ -1,8 +1,8 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
-#include <ext/vector_float2.hpp>
-#include <ext/vector_int2.hpp>
+#include <glm.hpp>
+#include <fwd.hpp>
 
 struct SDL_Rect;
 struct SDL_FRect;
@@ -18,6 +18,10 @@ struct Circlei;
 
 using Point2i = glm::ivec2;
 using Point2f = glm::vec2;
+using Point3i = glm::ivec3;
+using Point3f = glm::vec3;
+
+using Matrix4f = glm::mat4;
 
 struct Linei
 {

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup>
+    <Link>
+      <AdditionalLibraryDirectories>
+        $(SolutionDir)Libraries\GLEW\lib\$(PlatformTarget);
+        %(AdditionalLibraryDirectories)
+      </AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+        opengl32.lib;
+        glew32.lib;
+        %(AdditionalDependencies)
+      </AdditionalDependencies>
+    </Link>
+    <ClCompile>
+      <AdditionalIncludeDirectories>
+        $(SolutionDir)Libraries\GLEW\include;
+        $(SolutionDir)Libraries\glm;
+        %(AdditionalIncludeDirectories)
+      </AdditionalIncludeDirectories>
+    </ClCompile>
+    <PostBuildEvent>
+      <Command>
+        xcopy "$(SolutionDir)Libraries\GLEW\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup />
+</Project>

@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <cstdint>
+#include <iosfwd>
 
 class ByteReader final
 {
@@ -42,6 +44,7 @@ public:
 	static int32_t SwapEndianness(int32_t value);
 
 	static bool IsBitSet(uint8_t byte, size_t bitIdx);
+	static bool IsBitSet(uint16_t twobyte, size_t bitIdx);
 
 private:
 

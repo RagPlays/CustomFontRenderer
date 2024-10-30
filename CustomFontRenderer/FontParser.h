@@ -34,6 +34,7 @@ private:
 	GlyphData ReadGlyph(uint32_t glyphPos);
 	GlyphData ReadSimpleGlyph(uint32_t glyphPos);
 	GlyphData ReadCompoundGlyph(uint32_t glyphPos);
+	std::pair<GlyphData, bool> ReadNextComponentGlyph(uint32_t glyphPos);
 	std::vector<int> ParseCoordinates(const std::vector<uint8_t>& allFlags, bool readingX);
 	void ParseLog(const std::string& message);
 	void ParseLogFlag(size_t flagIdx, uint8_t flag);

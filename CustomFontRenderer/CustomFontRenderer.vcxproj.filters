@@ -43,6 +43,9 @@
     <ClCompile Include="FontRenderer.cpp">
       <Filter>Application\Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Framework\OpenGl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Timer.h">
@@ -87,6 +90,9 @@
     <ClInclude Include="FontRenderer.h">
       <Filter>Application\Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Framework\OpenGl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Framework">
@@ -109,6 +115,9 @@
     </Filter>
     <Filter Include="Application\Rendering">
       <UniqueIdentifier>{233c7f20-9dee-4347-a8bf-da058ded2d0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\OpenGl">
+      <UniqueIdentifier>{665ae1aa-7a34-48c8-84fc-23a7dd81afab}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
