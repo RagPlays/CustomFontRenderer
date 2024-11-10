@@ -8,8 +8,7 @@ using namespace Engine;
 
 MainLayer::MainLayer()
 	: Layer{ "MainLayer" }
-	, m_CameraSpeed{ 5.f }
-	, m_Camera{ CreateScope<OrthographicCamera>(-1.6f, 1.6f, -0.9f, 0.9f, -100.f, 100.f) }
+	, m_CameraController{5.f, 1.6f / 0.9f, -1.f, 1.f, true }
 	, m_TriangleModel{}
 	, m_SquareColor{ 0.2f, 0.2f, 0.8f, 1.f }
 	, m_SquareModel{}
@@ -92,8 +91,15 @@ void MainLayer::OnImGuiRender()
 	ImGui::End();
 }
 
+void MainLayer::OnEvent(Event& e)
+{
+	m_CameraController.OnEvent(e);
+}
+
 void MainLayer::Update()
 {
+	m_CameraController.Update();
+
 	const Timer& timer{ Timer::Get() };
 	const float deltaTime{ timer.GetSeconds() };
 
@@ -101,15 +107,13 @@ void MainLayer::Update()
 
 	m_FlatColorShader->Bind();
 	m_FlatColorShader->SetFloat4("u_Color", m_SquareColor);
-
-	UpdateCameraMovement();
 }
 
 void MainLayer::Render()
 {
 	const Timer& timer{ Timer::Get() };
 	const float deltaTime{ timer.GetSeconds() };
-	const glm::mat4 viewProj{ m_Camera->GetViewProjectionMatrix() };
+	const glm::mat4 viewProj{ m_CameraController.GetCamera().GetViewProjectionMatrix()};
 
 	RenderCommand::SetClearColor({ 0.15f, 0.15f, 0.15f, 1.f });
 	RenderCommand::Clear(true, false);
@@ -139,38 +143,4 @@ void MainLayer::Render()
 	m_SquareModel->Submit(viewProj);
 
 	m_TriangleModel->Submit(viewProj);
-}
-
-void MainLayer::UpdateCameraMovement()
-{
-	const Timer& timer{ Timer::Get() };
-	const float deltaTime{ timer.GetSeconds() };
-	const float deltaSpeed{ deltaTime * m_CameraSpeed };
-	glm::vec3 movement{};
-
-	// Forwards / Backwards
-	if (Input::IsKeyPressed(Key::W) || Input::IsKeyPressed(Key::Up))
-	{
-		movement.y += deltaSpeed;
-	}
-	if (Input::IsKeyPressed(Key::S) || Input::IsKeyPressed(Key::Down))
-	{
-		movement.y -= deltaSpeed;
-	}
-	// Left / Right
-	if (Input::IsKeyPressed(Key::A) || Input::IsKeyPressed(Key::Left))
-	{
-		movement.x -= deltaSpeed;
-	}
-	if (Input::IsKeyPressed(Key::D) || Input::IsKeyPressed(Key::Right))
-	{
-		movement.x += deltaSpeed;
-	}
-	// Sprint
-	if (Input::IsKeyPressed(Key::LeftShift) || Input::IsKeyPressed(Key::RightShift))
-	{
-		movement *= 2.f;
-	}
-
-	m_Camera->Translate(movement);
 }

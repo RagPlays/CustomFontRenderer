@@ -27,6 +27,6 @@ namespace Engine
 
 	void OrthographicCamera::UpdateProjectionMatrix()
 	{
-		m_ProjectionMatrix = glm::ortho(m_Left, m_Right, m_Bottom, m_Top, m_Near, m_Far);
+		m_ProjectionMatrix = glm::ortho(m_Left, m_Right, m_Bottom, m_Top, -100.f, 100.f);
 	}
 }

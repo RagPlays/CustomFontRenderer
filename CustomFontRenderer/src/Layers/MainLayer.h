@@ -3,6 +3,8 @@
 
 #include <Engine.h>
 
+#include "CameraControllers/OrthographicCameraController.h"
+
 class MainLayer final : public Engine::Layer
 {
 public:
@@ -14,18 +16,17 @@ public:
 
 	virtual void OnImGuiRender() override;
 
+	virtual void OnEvent(Engine::Event& e) override;
+
 private:
 
 	// Basics
 	void Update();
 	void Render();
 
-	void UpdateCameraMovement();
-
 private:
 
-	const float m_CameraSpeed;
-	Engine::Scope<Engine::Camera> m_Camera;
+	OrthographicCameraController m_CameraController;
 
 	Engine::Scope<Engine::Model> m_TriangleModel;
 	glm::vec4 m_SquareColor;
