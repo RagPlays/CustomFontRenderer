@@ -1,31 +1,55 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.11.35312.102
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CustomFontRenderer", "CustomFontRenderer\CustomFontRenderer.vcxproj", "{BD922AEC-B6EE-40E5-BCB0-882E68CB5D3B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CustomFontRenderer", "CustomFontRenderer\CustomFontRenderer.vcxproj", "{6E8AF28E-5A6E-B3E4-C3CE-AD37AFD19D66}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "Engine\Engine.vcxproj", "{DBC7D3B0-C769-FE86-B024-12DB9C6585D7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GLFW", "Engine\vendor\GLFW\GLFW.vcxproj", "{154B857C-0182-860D-AA6E-6C109684020F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Glad", "Engine\vendor\Glad\Glad.vcxproj", "{BDD6857C-A90D-870D-52FA-6C103E10030F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImGui", "Engine\vendor\imgui\ImGui.vcxproj", "{C0FF640D-2C14-8DBE-F595-301E616989EF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
+		Dist|x64 = Dist|x64
 		Release|x64 = Release|x64
-		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BD922AEC-B6EE-40E5-BCB0-882E68CB5D3B}.Debug|x64.ActiveCfg = Debug|x64
-		{BD922AEC-B6EE-40E5-BCB0-882E68CB5D3B}.Debug|x64.Build.0 = Debug|x64
-		{BD922AEC-B6EE-40E5-BCB0-882E68CB5D3B}.Debug|x86.ActiveCfg = Debug|Win32
-		{BD922AEC-B6EE-40E5-BCB0-882E68CB5D3B}.Debug|x86.Build.0 = Debug|Win32
-		{BD922AEC-B6EE-40E5-BCB0-882E68CB5D3B}.Release|x64.ActiveCfg = Release|x64
-		{BD922AEC-B6EE-40E5-BCB0-882E68CB5D3B}.Release|x64.Build.0 = Release|x64
-		{BD922AEC-B6EE-40E5-BCB0-882E68CB5D3B}.Release|x86.ActiveCfg = Release|Win32
-		{BD922AEC-B6EE-40E5-BCB0-882E68CB5D3B}.Release|x86.Build.0 = Release|Win32
+		{6E8AF28E-5A6E-B3E4-C3CE-AD37AFD19D66}.Debug|x64.ActiveCfg = Debug|x64
+		{6E8AF28E-5A6E-B3E4-C3CE-AD37AFD19D66}.Debug|x64.Build.0 = Debug|x64
+		{6E8AF28E-5A6E-B3E4-C3CE-AD37AFD19D66}.Dist|x64.ActiveCfg = Dist|x64
+		{6E8AF28E-5A6E-B3E4-C3CE-AD37AFD19D66}.Dist|x64.Build.0 = Dist|x64
+		{6E8AF28E-5A6E-B3E4-C3CE-AD37AFD19D66}.Release|x64.ActiveCfg = Release|x64
+		{6E8AF28E-5A6E-B3E4-C3CE-AD37AFD19D66}.Release|x64.Build.0 = Release|x64
+		{DBC7D3B0-C769-FE86-B024-12DB9C6585D7}.Debug|x64.ActiveCfg = Debug|x64
+		{DBC7D3B0-C769-FE86-B024-12DB9C6585D7}.Debug|x64.Build.0 = Debug|x64
+		{DBC7D3B0-C769-FE86-B024-12DB9C6585D7}.Dist|x64.ActiveCfg = Dist|x64
+		{DBC7D3B0-C769-FE86-B024-12DB9C6585D7}.Dist|x64.Build.0 = Dist|x64
+		{DBC7D3B0-C769-FE86-B024-12DB9C6585D7}.Release|x64.ActiveCfg = Release|x64
+		{DBC7D3B0-C769-FE86-B024-12DB9C6585D7}.Release|x64.Build.0 = Release|x64
+		{154B857C-0182-860D-AA6E-6C109684020F}.Debug|x64.ActiveCfg = Debug|x64
+		{154B857C-0182-860D-AA6E-6C109684020F}.Debug|x64.Build.0 = Debug|x64
+		{154B857C-0182-860D-AA6E-6C109684020F}.Dist|x64.ActiveCfg = Dist|x64
+		{154B857C-0182-860D-AA6E-6C109684020F}.Dist|x64.Build.0 = Dist|x64
+		{154B857C-0182-860D-AA6E-6C109684020F}.Release|x64.ActiveCfg = Release|x64
+		{154B857C-0182-860D-AA6E-6C109684020F}.Release|x64.Build.0 = Release|x64
+		{BDD6857C-A90D-870D-52FA-6C103E10030F}.Debug|x64.ActiveCfg = Debug|x64
+		{BDD6857C-A90D-870D-52FA-6C103E10030F}.Debug|x64.Build.0 = Debug|x64
+		{BDD6857C-A90D-870D-52FA-6C103E10030F}.Dist|x64.ActiveCfg = Dist|x64
+		{BDD6857C-A90D-870D-52FA-6C103E10030F}.Dist|x64.Build.0 = Dist|x64
+		{BDD6857C-A90D-870D-52FA-6C103E10030F}.Release|x64.ActiveCfg = Release|x64
+		{BDD6857C-A90D-870D-52FA-6C103E10030F}.Release|x64.Build.0 = Release|x64
+		{C0FF640D-2C14-8DBE-F595-301E616989EF}.Debug|x64.ActiveCfg = Debug|x64
+		{C0FF640D-2C14-8DBE-F595-301E616989EF}.Debug|x64.Build.0 = Debug|x64
+		{C0FF640D-2C14-8DBE-F595-301E616989EF}.Dist|x64.ActiveCfg = Dist|x64
+		{C0FF640D-2C14-8DBE-F595-301E616989EF}.Dist|x64.Build.0 = Dist|x64
+		{C0FF640D-2C14-8DBE-F595-301E616989EF}.Release|x64.ActiveCfg = Release|x64
+		{C0FF640D-2C14-8DBE-F595-301E616989EF}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {5DE54B25-4F8D-4E43-8B43-0623B0C99DED}
 	EndGlobalSection
 EndGlobal
