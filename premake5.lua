@@ -97,7 +97,7 @@ project "CustomFontRenderer"
 	cppdialect "C++17"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-in/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	files{
 		"%{prj.name}/src/**.h",
