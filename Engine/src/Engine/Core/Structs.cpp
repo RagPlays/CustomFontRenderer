@@ -3,28 +3,28 @@
 
 namespace Engine
 {
-	// LINEI / LINEF //
+	// LINES //
 
-	Linei::Linei()
-		: Linei{ 0, 0, 0, 0 }
+	Line2i::Line2i()
+		: Line2i{ 0, 0, 0, 0 }
 	{
 	}
 
-	Linei::Linei(int x1, int y1, int x2, int y2)
+	Line2i::Line2i(int x1, int y1, int x2, int y2)
 		: pointOne{ x1, y1 }
 		, pointTwo{ x2, y2 }
 	{
 	}
 
-	Linei::Linei(const glm::ivec2& pointOne, const glm::ivec2& pointTwo)
+	Line2i::Line2i(const glm::ivec2& pointOne, const glm::ivec2& pointTwo)
 		: pointOne{ pointOne }
 		, pointTwo{ pointTwo }
 	{
 	}
 
-	Linei::operator Linef() const
+	Line2i::operator Line2f() const
 	{
-		return Linef
+		return Line2f
 		{
 			glm::vec2(pointOne),
 			glm::vec2(pointTwo),
@@ -33,130 +33,268 @@ namespace Engine
 
 	//
 
-	Linef::Linef()
-		: Linef{ 0.f, 0.f, 0.f, 0.f }
+	Line2f::Line2f()
+		: Line2f{ 0.f, 0.f, 0.f, 0.f }
 	{
 	}
 
-	Linef::Linef(float x1, float y1, float x2, float y2)
+	Line2f::Line2f(float x1, float y1, float x2, float y2)
 		: pointOne{ x1, y1 }
 		, pointTwo{ x2, y2 }
 	{
 	}
 
-	Linef::Linef(const glm::vec2& pointOne, const glm::vec2& pointTwo)
+	Line2f::Line2f(const glm::vec2& pointOne, const glm::vec2& pointTwo)
 		: pointOne{ pointOne }
 		, pointTwo{ pointTwo }
 	{
 	}
 
-	Linef::operator Linei() const
+	Line2f::operator Line2i() const
 	{
-		return Linei
+		return Line2i
 		{
 			glm::ivec2(pointOne),
 			glm::ivec2(pointTwo),
 		};
 	}
 
-	// RECTI / RECTF //
+	//
 
-	Recti::Recti()
-		: Recti{ 0, 0, 0, 0 }
+	Line3i::Line3i()
+		: pointOne{}
+		, pointTwo{}
 	{
 	}
 
-	Recti::Recti(int x, int y, int width, int height)
-		: x{ x }
-		, y{ y }
-		, width{ width }
-		, height{ height }
+	Line3i::Line3i(int x1, int y1, int z1, int x2, int y2, int z2)
+		: pointOne{}
+		, pointTwo{}
 	{
 	}
 
-	Recti::Recti(const glm::ivec2& pos, const glm::ivec2& size)
-		: x{ pos.x }
-		, y{ pos.y }
-		, width{ size.x }
-		, height{ size.y }
+	Line3i::Line3i(const glm::ivec3& pointOne, const glm::ivec3& pointTwo)
+		: pointOne{}
+		, pointTwo{}
 	{
 	}
 
-	Recti::Recti(const glm::ivec2& pos, int width, int height)
-		: x{ pos.x }
-		, y{ pos.y }
-		, width{ width }
-		, height{ height }
+	Line3i::operator Line3f() const
 	{
-	}
-
-	Recti::operator Rectf() const
-	{
-		return Rectf
+		return Line3f
 		{
-			static_cast<float>(x),
-			static_cast<float>(y),
-			static_cast<float>(width),
-			static_cast<float>(height)
+			static_cast<glm::vec3>(pointOne),
+			static_cast<glm::vec3>(pointTwo)
 		};
 	}
 
 	//
 
-	Rectf::Rectf()
-		: Rectf{ 0.f, 0.f, 0.f, 0.f }
+	Line3f::Line3f()
+		: pointOne{}
+		, pointTwo{}
 	{
 	}
 
-	Rectf::Rectf(float x, float y, float width, float height)
-		: x{ x }
-		, y{ y }
-		, width{ width }
-		, height{ height }
+	Line3f::Line3f(float x1, float y1, float z1, float x2, float y2, float z2)
+		: pointOne{ x1, y1, z1 }
+		, pointTwo{ x2, y2, z2 }
 	{
 	}
 
-	Rectf::Rectf(const glm::vec2& pos, const glm::vec2& size)
-		: x{ pos.x }
-		, y{ pos.y }
-		, width{ size.x }
-		, height{ size.y }
+	Line3f::Line3f(const glm::vec3& pointOne, const glm::vec3& pointTwo)
+		: pointOne{ pointOne }
+		, pointTwo{ pointTwo }
 	{
 	}
 
-	Rectf::Rectf(const glm::vec2& pos, float width, float height)
-		: x{ pos.x }
-		, y{ pos.y }
-		, width{ width }
-		, height{ height }
+	Line3f::operator Line3i() const
 	{
-	}
-
-	Rectf::operator Recti() const
-	{
-		return Recti
+		return Line3i
 		{
-			static_cast<int>(x),
-			static_cast<int>(y),
-			static_cast<int>(width),
-			static_cast<int>(height)
+			static_cast<glm::ivec3>(pointOne),
+			static_cast<glm::ivec3>(pointTwo)
+		};
+	}
+
+	// RECTS //
+
+	Rect2i::Rect2i()
+		: position{ 0, 0 }
+		, size{ 0, 0 }
+	{
+	}
+
+	Rect2i::Rect2i(int x, int y, int width, int height)
+		: position{ x, y }
+		, size{ width, height }
+	{
+	}
+
+	Rect2i::Rect2i(const glm::ivec2& pos, const glm::ivec2& size)
+		: position{ pos }
+		, size{ size }
+	{
+	}
+
+	Rect2i::Rect2i(const glm::ivec2& pos, int width, int height)
+		: position{ pos }
+		, size{ width, height }
+	{
+	}
+
+	Rect2i::Rect2i(int x, int y, const glm::ivec2& size)
+		: position{ x, y }
+		, size{ size }
+	{
+	}
+
+	Rect2i::operator Rect2f() const
+	{
+		return Rect2f
+		{
+			static_cast<glm::vec2>(position),
+			static_cast<glm::vec2>(size)
+		};
+	}
+
+	//
+
+	Rect2f::Rect2f()
+		: position{}
+		, size{}
+	{
+	}
+
+	Rect2f::Rect2f(float x, float y, float width, float height)
+		: position{ x, y }
+		, size{ size }
+	{
+	}
+
+	Rect2f::Rect2f(const glm::vec2& pos, const glm::vec2& size)
+		: position{ pos.x, pos.y }
+		, size{ size }
+	{
+	}
+
+	Rect2f::Rect2f(const glm::vec2& pos, float width, float height)
+		: position{ pos.x, pos.y }
+		, size{ size }
+	{
+	}
+
+	Rect2f::Rect2f(float x, float y, const glm::vec2& size)
+		: position{ x, y }
+		, size{ size }
+	{
+	}
+
+	Rect2f::operator Rect2i() const
+	{
+		return Rect2i
+		{
+			static_cast<glm::ivec2>(position),
+			static_cast<glm::ivec2>(size)
+		};
+	}
+
+	//
+
+	Rect3i::Rect3i()
+		: position{}
+		, size{}
+	{
+	}
+
+	Rect3i::Rect3i(int x, int y, int z, int width, int height)
+		: position{ x, y, z }
+		, size{ width, height }
+	{
+	}
+
+	Rect3i::Rect3i(const glm::ivec3& pos, const glm::ivec2& size)
+		: position{ pos }
+		, size{ size }
+	{
+	}
+
+	Rect3i::Rect3i(const glm::ivec3& pos, int width, int height)
+		: position{ pos }
+		, size{ width, height }
+	{
+	}
+
+	Rect3i::Rect3i(int x, int y, int z, const glm::ivec2& size)
+		: position{ x, y, z }
+		, size{ size }
+	{
+	}
+
+	Rect3i::operator Rect3f() const
+	{
+		return Rect3f
+		{
+			static_cast<glm::vec3>(position),
+			static_cast<glm::vec2>(size)
+		};
+	}
+
+	//
+
+	Rect3f::Rect3f()
+		: position{}
+		, size{}
+	{
+	}
+
+	Rect3f::Rect3f(float x, float y, float z, float width, float height)
+		: position{ x, y, z }
+		, size{ width, height }
+	{
+	}
+
+	Rect3f::Rect3f(const glm::vec3& pos, const glm::vec2& size)
+		: position{ pos }
+		, size{ size }
+	{
+	}
+
+	Rect3f::Rect3f(const glm::vec3& pos, float width, float height)
+		: position{ pos }
+		, size{ width, height }
+	{
+	}
+
+	Rect3f::Rect3f(float x, float y, float z, const glm::vec2& size)
+		: position{ x, y, z }
+		, size{ size }
+	{
+	}
+
+	Rect3f::operator Rect3i() const
+	{
+		return Rect3i
+		{
+			static_cast<glm::ivec3>(position),
+			static_cast<glm::ivec2>(size)
 		};
 	}
 
 	// CIRCLEI / CIRCLEF //
 
-	Circlei::Circlei()
-		: Circlei{ 0, 0, 0 }
+	Circle2i::Circle2i()
+		: Circle2i{ 0, 0, 0 }
 	{
 	}
 
-	Circlei::Circlei(const glm::ivec2& center, float radius)
+	Circle2i::Circle2i(const glm::ivec2& center, float radius)
 		: center{ center }
 		, radius{ radius }
 	{
 	}
 
-	Circlei::Circlei(float centerX, float centerY, float radius)
+	Circle2i::Circle2i(float centerX, float centerY, float radius)
 		: center{ centerX, centerY }
 		, radius{ radius }
 	{
@@ -164,18 +302,18 @@ namespace Engine
 
 	//
 
-	Circlef::Circlef()
-		: Circlef{ 0.f, 0.f, 0.f }
+	Circle2f::Circle2f()
+		: Circle2f{ 0.f, 0.f, 0.f }
 	{
 	}
 
-	Circlef::Circlef(const glm::vec2& center, float radius)
+	Circle2f::Circle2f(const glm::vec2& center, float radius)
 		: center{ center }
 		, radius{ radius }
 	{
 	}
 
-	Circlef::Circlef(float centerX, float centerY, float radius)
+	Circle2f::Circle2f(float centerX, float centerY, float radius)
 		: center{ centerX, centerY }
 		, radius{ radius }
 	{
@@ -183,78 +321,42 @@ namespace Engine
 
 	// ELLIPSEI / ELLIPSEF //
 
-	Ellipsei::Ellipsei()
-		: Ellipsei{ 0, 0, 0, 0 }
+	Ellipse2i::Ellipse2i()
+		: Ellipse2i{ 0, 0, 0, 0 }
 	{
 	}
 
-	Ellipsei::Ellipsei(int centerX, int centerY, int radiusX, int radiusY)
+	Ellipse2i::Ellipse2i(int centerX, int centerY, int radiusX, int radiusY)
 		: center{ centerX, centerY }
 		, radiusX{ radiusX }
 		, radiusY{ radiusY }
 	{
 	}
 
-	Ellipsei::Ellipsei(const glm::ivec2& center, int radiusX, int radiusY)
+	Ellipse2i::Ellipse2i(const glm::ivec2& center, int radiusX, int radiusY)
 		: center{ center }
 		, radiusX{ radiusX }
 		, radiusY{ radiusY }
 	{
 	}
 
-	Ellipsef::Ellipsef()
-		: Ellipsef{ 0.f, 0.f, 0.f, 0.f }
+	Ellipse2f::Ellipse2f()
+		: Ellipse2f{ 0.f, 0.f, 0.f, 0.f }
 	{
 	}
 
-	Ellipsef::Ellipsef(float centerX, float centerY, float radiusX, float radiusY)
+	Ellipse2f::Ellipse2f(float centerX, float centerY, float radiusX, float radiusY)
 		: center{ centerX, centerY }
 		, radiusX{ radiusX }
 		, radiusY{ radiusY }
 	{
 	}
 
-	Ellipsef::Ellipsef(const glm::vec2& center, float radiusX, float radiusY)
+	Ellipse2f::Ellipse2f(const glm::vec2& center, float radiusX, float radiusY)
 		: center{ center }
 		, radiusX{ radiusX }
 		, radiusY{ radiusY }
 	{
 	}
 
-
-	// COLOR //
-
-	constexpr Color4f Color4f::red{ 1.0f, 0.0f, 0.0f };
-	constexpr Color4f Color4f::orange{ 1.0f, 0.5f, 0.0f };
-	constexpr Color4f Color4f::yellow{ 1.0f, 1.0f, 0.0f };
-	constexpr Color4f Color4f::chartreuse{ 0.5f, 1.0f, 0.0f };
-	constexpr Color4f Color4f::green{ 0.0f, 1.0f, 0.0f };
-	constexpr Color4f Color4f::springGreen{ 0.0f, 1.0f, 0.5f };
-	constexpr Color4f Color4f::cyan{ 0.0f, 1.0f, 1.0f };
-	constexpr Color4f Color4f::azure{ 0.0f, 0.5f, 1.0f };
-	constexpr Color4f Color4f::blue{ 0.0f, 0.0f, 1.0f };
-	constexpr Color4f Color4f::violet{ 0.5f, 0.0f, 1.0f };
-	constexpr Color4f Color4f::magenta{ 1.0f, 0.0f, 1.0f };
-	constexpr Color4f Color4f::rose{ 1.0f, 0.0f, 0.5f };
-	constexpr Color4f Color4f::white{ 1.0f, 1.0f, 1.0f };
-	constexpr Color4f Color4f::black{ 0.0f, 0.0f, 0.0f };
-
-	Color4f::Color4f(float r, float g, float b, float a)
-		: r{ r }
-		, g{ g }
-		, b{ b }
-		, a{ a }
-	{
-	}
-
-	Color4f::Color4f(int r, int g, int b, int a)
-		: Color4f
-		{
-			static_cast<float>(r / 255.f),
-			static_cast<float>(g / 255.f),
-			static_cast<float>(b / 255.f),
-			static_cast<float>(a / 255.f)
-		}
-	{
-	}
 }

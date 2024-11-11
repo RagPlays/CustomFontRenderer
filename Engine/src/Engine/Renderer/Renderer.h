@@ -25,11 +25,19 @@ namespace Engine
 		static void Init();
 		static void Shutdown();
 
+		static void BeginScene(const Camera& camera);
+		static void EndScene();
+
 		static void OnWindowResize(uint32_t width, uint32_t height);
 
+		static void Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& modelMatrix);
 		static void Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray);
 
 		static RendererAPI::API GetAPI();
+
+	private:
+
+		static glm::mat4 s_CurrentViewProjMatix;
 
 	};
 }

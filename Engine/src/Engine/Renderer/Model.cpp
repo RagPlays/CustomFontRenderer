@@ -8,6 +8,12 @@
 
 namespace Engine
 {
+	Model::Model(const std::string& filename, Ref<Shader> shader)
+	{
+		ENGINE_CORE_ASSERT(false, "not implemented yet");
+		ENGINE_CORE_ERROR("Model::Model(const std::string& filename, Ref<Shader> shader) :::: not implemented!!");
+	}
+
 	Model::Model(Ref<Shader> shader, Ref<VertexArray> vertexArray)
 		: m_Position{}
 		, m_Rotation{}

@@ -22,7 +22,7 @@ private:
 
 	// Basics
 	void Update();
-	void Render();
+	void Render() const;
 
 private:
 

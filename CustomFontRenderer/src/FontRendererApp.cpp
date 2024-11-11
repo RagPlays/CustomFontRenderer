@@ -1,14 +1,18 @@
 #include "FontRendererApp.h"
 
-using namespace Engine;
+#include "Layers/MainLayer.h"
+#include "Layers/TestLayer2D.h"
 
-Application* Engine::CreateApplication(const ApplicationCommandLineArgs& args)
+Engine::Application* Engine::CreateApplication(const ApplicationCommandLineArgs& args)
 {
 	return new FontRendererApp{};
 }
 
 FontRendererApp::FontRendererApp()
 {
-	MainLayer* mainLayer{ new MainLayer{} };
-	AddLayer(mainLayer);
+	/*MainLayer* mainLayer{ new MainLayer{} };
+	AddLayer(mainLayer);*/
+	
+	TestLayer2D* testLayer2D{ new TestLayer2D{} };
+	AddLayer(testLayer2D);
 }

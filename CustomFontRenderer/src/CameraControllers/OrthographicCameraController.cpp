@@ -13,8 +13,9 @@ OrthographicCameraController::OrthographicCameraController(float cameraSpeed, fl
 	, m_MaxZoom{ 100.f }
 	, m_MinZoom{ 0.1f }
     , m_CanRotate{ canRotate }
-    , m_Camera{ -aspectRatio, aspectRatio, -1.f, 1.f, nearDist, farDist }
+    , m_Camera{ nearDist, farDist }
 {
+	UpdateProjection();
 }
 
 void OrthographicCameraController::Update()
@@ -54,8 +55,8 @@ void OrthographicCameraController::Update()
 	const glm::vec2 currentMousePos{ Input::GetMousePosition() };
 	if (Input::IsMouseButtonPressed(Mouse::ButtonRight))
 	{
-		const float deltaX{ static_cast<float>(currentMousePos.x - m_LastMousePos.x) * m_ZoomLevel * 0.01f };
-		const float deltaY{ static_cast<float>(currentMousePos.y - m_LastMousePos.y) * m_ZoomLevel * 0.01f };
+		const float deltaX{ static_cast<float>(currentMousePos.x - m_LastMousePos.x) * m_ZoomLevel * 0.006f };
+		const float deltaY{ static_cast<float>(currentMousePos.y - m_LastMousePos.y) * m_ZoomLevel * 0.006f };
 		translation += glm::vec3{ -deltaX, deltaY, 0.f };
 	}
 	m_LastMousePos = currentMousePos;
@@ -111,7 +112,7 @@ bool OrthographicCameraController::OnWindowResized(WindowResizeEvent& e)
 	const float height{ static_cast<float>(e.GetHeight()) };
 	m_AspectRatio = width / height;
 
-	m_Camera.SetProjection(-width * m_ZoomLevel, width * m_ZoomLevel, -height * m_ZoomLevel, height * m_ZoomLevel);
+	UpdateProjection();
 
     return false;
 }

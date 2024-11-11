@@ -9,6 +9,7 @@ namespace Engine
 	{
 	public:
 
+		explicit OrthographicCamera(float nearDist = -1.f, float farDist = 1.f);
 		explicit OrthographicCamera(float left, float right, float bottom, float top, float nearDist, float farDist);
 		virtual ~OrthographicCamera() = default;
 

@@ -6,6 +6,8 @@
 
 #ifdef ENGINE_PLATFORM_WINDOWS
 
+#include <iostream>
+
 extern Engine::Application* Engine::CreateApplication(const ApplicationCommandLineArgs& args);
 
 int main(int argc, char** argv)
@@ -36,6 +38,8 @@ int main(int argc, char** argv)
 
 #if defined ENGINE_DEBUG
 	ENGINE_CORE_INFO("Application Terminated.");
+
+	std::cin.get();
 #endif
 
 }

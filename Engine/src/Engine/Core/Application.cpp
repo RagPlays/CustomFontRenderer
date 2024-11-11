@@ -27,7 +27,6 @@ namespace Engine
 		m_Window->SetEventCallback(ENGINE_BIND_EVENT_FN(Application::OnEvent));
 
 		// Init Timer and Renderer
-		Timer::Get();
 		Renderer::Init();
 		
 		// Set Imgui start layer
@@ -74,11 +73,12 @@ namespace Engine
 		if (e.GetWidth() == 0 || e.GetHeight() == 0)
 		{
 			m_Minimized = true;
-			return false;
 		}
-
-		m_Minimized = false;
-		Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
+		else
+		{
+			m_Minimized = false;
+			Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
+		}
 
 		return false;
 	}
@@ -103,6 +103,8 @@ namespace Engine
 
 	void Application::Run()
 	{
+		Timer::Get();
+
 		while (m_Running)
 		{
 			Timer::Get().Update();

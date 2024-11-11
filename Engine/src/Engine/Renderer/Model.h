@@ -10,6 +10,7 @@ namespace Engine
 	{
 	public:
 
+		explicit Model(const std::string& filename, Ref<Shader> shader);
 		explicit Model(Ref<Shader> shader, Ref<VertexArray> vertexArray);
 		~Model() = default;
 

@@ -8,7 +8,7 @@ using namespace Engine;
 
 MainLayer::MainLayer()
 	: Layer{ "MainLayer" }
-	, m_CameraController{5.f, 1.6f / 0.9f, -1.f, 1.f, true }
+	, m_CameraController{ 5.f, 1.6f / 0.9f, -1.f, 1.f, true }
 	, m_TriangleModel{}
 	, m_SquareColor{ 0.2f, 0.2f, 0.8f, 1.f }
 	, m_SquareModel{}
@@ -66,8 +66,8 @@ MainLayer::MainLayer()
 
 	// Shaders //
 	m_BasicShader = Shader::Create("assets/shaders/basicShader.glsl");
-	m_FlatColorShader = Shader::Create("assets/shaders/flatColorShader.glsl");
-	m_TextureShader = Shader::Create("assets/shaders/textureShader.glsl");
+	m_FlatColorShader = Shader::Create("assets/shaders/flatColor.glsl");
+	m_TextureShader = Shader::Create("assets/shaders/texture.glsl");
 	m_TextureShader->Bind();
 	m_TextureShader->SetInt("u_Texture", 0);
 
@@ -109,17 +109,14 @@ void MainLayer::Update()
 	m_FlatColorShader->SetFloat4("u_Color", m_SquareColor);
 }
 
-void MainLayer::Render()
+void MainLayer::Render() const
 {
 	const Timer& timer{ Timer::Get() };
 	const float deltaTime{ timer.GetSeconds() };
-	const glm::mat4 viewProj{ m_CameraController.GetCamera().GetViewProjectionMatrix()};
+	const glm::mat4 viewProj{ m_CameraController.GetCamera().GetViewProjectionMatrix() };
 
 	RenderCommand::SetClearColor({ 0.15f, 0.15f, 0.15f, 1.f });
 	RenderCommand::Clear(true, false);
-
-	const glm::vec4 redColor{ 0.8f, 0.2f, 0.3f, 1.0f };
-	const glm::vec4 blueColor{ 0.2f, 0.3f, 0.8f, 1.0f };
 
 	m_SquareModel->SetScale(glm::vec3{ 0.1f, 0.1f, 0.1f });
 	m_SquareModel->SetShader(m_FlatColorShader);

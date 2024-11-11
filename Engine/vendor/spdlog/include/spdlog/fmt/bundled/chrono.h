@@ -521,7 +521,7 @@ inline auto localtime(std::time_t time) -> std::tm {
     std::time_t time_;
     std::tm tm_;
 
-    dispatcher(std::time_t t) : time_(t) {}
+    dispatcher(std::time_t t) : time_(t){}
 
     auto run() -> bool {
       using namespace fmt::detail;

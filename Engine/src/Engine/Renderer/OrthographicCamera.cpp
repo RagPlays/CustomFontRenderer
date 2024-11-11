@@ -5,6 +5,11 @@
 
 namespace Engine
 {
+	OrthographicCamera::OrthographicCamera(float nearDist, float farDist)
+		: OrthographicCamera{-1.f, 1.f, -1.f, 1.f, nearDist, farDist }
+	{
+	}
+
 	OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top, float nearDist, float farDist)
 		: Camera{ nearDist, farDist }
 		, m_Left{ left }

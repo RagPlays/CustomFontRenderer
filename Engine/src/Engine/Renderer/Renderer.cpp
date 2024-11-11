@@ -6,6 +6,8 @@
 
 namespace Engine
 {
+    glm::mat4 Renderer::s_CurrentViewProjMatix{ 1.f };
+
     void Renderer::Init()
     {
         RenderCommand::Init();
@@ -17,9 +19,29 @@ namespace Engine
         Renderer2D::Shutdown();
     }
 
+    void Renderer::BeginScene(const Camera& camera)
+    {
+        s_CurrentViewProjMatix = camera.GetViewProjectionMatrix();
+    }
+
+    void Renderer::EndScene()
+    {
+    }
+
     void Renderer::OnWindowResize(uint32_t width, uint32_t height)
     {
         RenderCommand::SetViewport(0, 0, width, height);
+    }
+
+    void Renderer::Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& modelMatrix)
+    {
+        if (shader->UniformExists("u_ViewProjectionMatrix") && shader->UniformExists("u_ModelMatrix"))
+        {
+            shader->Bind();
+            shader->SetMat4("u_ViewProjectionMatrix", s_CurrentViewProjMatix);
+            shader->SetMat4("u_ModelMatrix", modelMatrix);
+            RenderCommand::DrawIndexed(vertexArray);
+        }
     }
 
     void Renderer::Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray)

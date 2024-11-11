@@ -4,8 +4,6 @@
 #include <Engine.h>
 #include <Engine/Core/EntryPoint.h>
 
-#include "Layers/MainLayer.h"
-
 class FontRendererApp : public Engine::Application
 {
 public:

@@ -91,6 +91,7 @@ namespace Engine
             if (Renderer::GetAPI() == RendererAPI::API::OpenGL)
             {
                 glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+                glfwWindowHint(GLFW_DEPTH_BITS, 24);
             }
 #endif
         }
