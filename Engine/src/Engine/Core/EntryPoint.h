@@ -1,47 +1,30 @@
 #ifndef ENTRYPOINT_H
 #define ENTRYPOINT_H
 
-#include "Engine/Core/Log.h"
+#include "Engine/Core/Base.h"
 #include "Engine/Core/Application.h"
 
 #ifdef ENGINE_PLATFORM_WINDOWS
-
-#include <iostream>
 
 extern Engine::Application* Engine::CreateApplication(const ApplicationCommandLineArgs& args);
 
 int main(int argc, char** argv)
 {
-	// Initialize logger
+#if ENGINE_LOGGING
 	Engine::Log::Init();
-
-#if defined ENGINE_DEBUG
-	ENGINE_CORE_INFO("Initilized Log.");
 #endif
 
-	// Starting application
+	ENGINE_PROFILE_BEGIN_SESSION("Startup", "EngineProfile-Startup.json");
 	Engine::Application* app{ Engine::CreateApplication({argc, argv}) };
+	ENGINE_PROFILE_END_SESSION();
 
-#if defined ENGINE_DEBUG
-	ENGINE_CORE_INFO("Applicaton Created.");
-#endif
-
-	// Running application
+	ENGINE_PROFILE_BEGIN_SESSION("Runtime", "EngineProfile-Runtime.json");
 	app->Run();
+	ENGINE_PROFILE_END_SESSION();
 
-#if defined ENGINE_DEBUG
-	ENGINE_CORE_INFO("Shutting Down Application.");
-#endif
-
-	// Shutting down application
+	ENGINE_PROFILE_BEGIN_SESSION("Shutdown", "EngineProfile-Shutdown.json");
 	delete app;
-
-#if defined ENGINE_DEBUG
-	ENGINE_CORE_INFO("Application Terminated.");
-
-	std::cin.get();
-#endif
-
+	ENGINE_PROFILE_END_SESSION();
 }
 
 #endif

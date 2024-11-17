@@ -1,11 +1,6 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-// warning about "std::unique_ptr<Window> m_Window;"
-// if I make it raw pointer no error but I prefer using smart pointers
-#pragma warning(push)
-#pragma warning(disable: 4251)
-
 #include <memory>
 
 #include "Engine/Core/Base.h"
@@ -92,8 +87,6 @@ namespace Engine
 
 	// To be defined in client
 	Application* CreateApplication(const ApplicationCommandLineArgs& args);
-
-#pragma warning(pop)
 }
 
 #endif // !APPLICATION_H

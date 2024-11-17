@@ -1,6 +1,8 @@
 #ifndef LOG_H
 #define LOG_H
 
+#if ENGINE_LOGGING
+
 #include <memory>
 
 // This ignores all warnings raised inside External headers
@@ -47,4 +49,23 @@ namespace Engine
 #define ENGINE_FATAL(...)  ::Engine::Log::GetClientLogger()->critical(__VA_ARGS__)
 
 #pragma warning(pop)
+
+#else
+
+// Core log macros
+#define ENGINE_CORE_TRACE(...)
+#define ENGINE_CORE_INFO(...)
+#define ENGINE_CORE_WARN(...)
+#define ENGINE_CORE_ERROR(...)
+#define ENGINE_CORE_FATAL(...)
+
+// Client log macros
+#define ENGINE_TRACE(...)
+#define ENGINE_INFO(...)
+#define ENGINE_WARN(...)
+#define ENGINE_ERROR(...)
+#define ENGINE_FATAL(...)
+
+#endif
+
 #endif // !LOG_H

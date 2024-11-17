@@ -18,7 +18,6 @@ namespace Engine
 
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
-		virtual void OnImGuiRender() override;
 
 		void Begin();
 		void End();
@@ -27,7 +26,7 @@ namespace Engine
 
 		void SetDarkThemeColors();
 
-		uint32_t GetActiveWidgetID() const;
+		//uint32_t GetActiveWidgetID() const;
 
 	private:
 

@@ -13,10 +13,8 @@ namespace Engine
 	public:
 
 		explicit OpenGLTexture2D(const TextureSpecification& specification);
-		explicit OpenGLTexture2D(const std::string& path);
+		explicit OpenGLTexture2D(const std::string& path, const TextureParameters& params);
 		virtual ~OpenGLTexture2D();
-
-		virtual const TextureSpecification& GetSpecification() const override;
 
 		virtual uint32_t GetWidth() const override;
 		virtual uint32_t GetHeight() const override;
@@ -24,7 +22,7 @@ namespace Engine
 
 		virtual const std::string& GetPath() const override;
 
-		virtual void SetData(void* data, uint32_t size) override;
+		virtual void SetData(const void* data, uint32_t size) override;
 
 		virtual void Bind(uint32_t slot = 0) const override;
 
@@ -33,8 +31,6 @@ namespace Engine
 		virtual bool operator==(const Texture& other) const override;
 
 	private:
-
-		TextureSpecification m_Specification;
 
 		std::string m_FilePath;
 		bool m_IsLoaded;

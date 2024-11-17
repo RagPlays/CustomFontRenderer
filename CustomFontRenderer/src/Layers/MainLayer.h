@@ -3,7 +3,7 @@
 
 #include <Engine.h>
 
-#include "CameraControllers/OrthographicCameraController.h"
+#include "CameraControllers/OrthoCamController.h"
 
 class MainLayer final : public Engine::Layer
 {
@@ -26,11 +26,12 @@ private:
 
 private:
 
-	OrthographicCameraController m_CameraController;
+	OrthoCamController m_CameraController;
 
-	Engine::Scope<Engine::Model> m_TriangleModel;
 	glm::vec4 m_SquareColor;
-	Engine::Scope<Engine::Model> m_SquareModel;
+	float m_TriangleRotationZ;
+	//Engine::Scope<Engine::Model> m_TriangleModel;
+	//Engine::Scope<Engine::Model> m_SquareModel;
 	Engine::Ref<Engine::Texture2D> m_Texture;
 	Engine::Ref<Engine::Texture2D> m_TransparentTexture;
 

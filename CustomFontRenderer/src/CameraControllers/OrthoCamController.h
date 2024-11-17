@@ -10,16 +10,18 @@ namespace Engine
 	class WindowResizeEvent;
 }
 
-class OrthographicCameraController final
+class OrthoCamController final
 {
 public:
 
-	explicit OrthographicCameraController(float cameraSpeed, float aspectRatio, float nearDist, float farDist, bool canRotate);
-	~OrthographicCameraController() = default;
+	explicit OrthoCamController(float cameraSpeed, float aspectRatio, float nearDist, float farDist, bool canRotate);
+	~OrthoCamController() = default;
 
 	void Update();
-
 	void OnEvent(Engine::Event& e);
+
+	float GetZoom() const;
+	void SetZoom(float newZoom);
 
 	const Engine::OrthographicCamera& GetCamera() const;
 
@@ -29,12 +31,14 @@ private:
 	bool OnWindowResized(Engine::WindowResizeEvent& e);
 
 	void UpdateProjection();
+	void UpdateDragSpeed(float width, float height);
 
 private:
 
 	const float m_MovementSpeed;
 	const float m_RotationSpeed;
 	glm::vec2 m_LastMousePos;
+	glm::vec2 m_DragSpeed;
 	float m_AspectRatio;
 	float m_ZoomLevel;
 	const float m_MaxZoom;

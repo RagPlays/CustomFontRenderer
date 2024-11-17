@@ -26,6 +26,8 @@ namespace Engine
 		, m_FilePath{ filepath }
 		, m_Name{}
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		// Read, preprocess, compile
 		const std::string fileSource{ ReadFile(filepath) };
 		const auto shaderSources{ PreProcess(fileSource) };
@@ -43,6 +45,8 @@ namespace Engine
 		, m_FilePath{}
 		, m_Name{ name }
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		std::unordered_map<GLenum, std::string> shaderSources{};
 		shaderSources[GL_VERTEX_SHADER] = vertexSrc;
 		shaderSources[GL_FRAGMENT_SHADER] = fragmentSrc;
@@ -52,56 +56,78 @@ namespace Engine
 
 	OpenGLShader::~OpenGLShader()
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		glDeleteProgram(m_RendererID);
 	}
 
 	void OpenGLShader::Bind() const
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		glUseProgram(m_RendererID);
 	}
 
 	void OpenGLShader::Unbind() const
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		glUseProgram(0);
 	}
 
 	void OpenGLShader::SetInt(const std::string& name, int value) const
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		glUniform1i(GetUniformLocation(name), value);
 	}
 
 	void OpenGLShader::SetIntArray(const std::string& name, int* values, uint32_t count) const
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		glUniform1iv(GetUniformLocation(name), count, values);
 	}
 
 	void OpenGLShader::SetFloat(const std::string& name, float value) const
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		glUniform1f(GetUniformLocation(name), value);
 	}
 
 	void OpenGLShader::SetFloat2(const std::string& name, const glm::vec2& value) const
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		glUniform2f(GetUniformLocation(name), value.x, value.y);
 	}
 
 	void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& value) const
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		glUniform3f(GetUniformLocation(name), value.x, value.y, value.z);
 	}
 
 	void OpenGLShader::SetFloat4(const std::string& name, const glm::vec4& value) const
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		glUniform4f(GetUniformLocation(name), value.x, value.y, value.z, value.w);
 	}
 
 	void OpenGLShader::SetMat3(const std::string& name, const glm::mat3& value) const
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		glUniformMatrix3fv(GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
 	}
 
 	void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value) const
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
 	}
 
@@ -125,6 +151,8 @@ namespace Engine
 	// PRIVATE //
 	std::string OpenGLShader::ReadFile(const std::string& filepath)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		std::string result{};
 		std::ifstream input{ filepath, std::ios::in | std::ios::binary }; // ifstream closes itself due to RAII
 		if (!input.good())
@@ -152,6 +180,8 @@ namespace Engine
 
 	std::unordered_map<unsigned int, std::string> OpenGLShader::PreProcess(const std::string& source)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		std::unordered_map<unsigned int, std::string> shaderSources{};
 
 		const char* typeToken{ "#type" };
@@ -187,6 +217,8 @@ namespace Engine
 
 	void OpenGLShader::Compile(const std::unordered_map<unsigned int, std::string>& shaderSources)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		// Create programm
 		unsigned int programId{ glCreateProgram() };
 

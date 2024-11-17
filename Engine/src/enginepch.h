@@ -18,9 +18,13 @@
 	#include <Windows.h>
 #endif
 
+#include "Engine/Core/EngineDefines.h"
+
 #include "Engine/Core/Structs.h"
 #include "Engine/Core/Assert.h"
 #include "Engine/Core/Log.h"
 #include "Engine/Core/Base.h"
+
+#include "Engine/Debug/Instrumentor.h"
 
 #endif // !ENGINEPCH_H

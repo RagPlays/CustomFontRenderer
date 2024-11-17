@@ -53,7 +53,6 @@ project "Engine"
 	}
 
 	defines{
-		"ENGINE_BUILD_DLL",
 		"_CRT_SECURE_NO_WARNINGS",
 		"GLFW_INCLUDE_NONE"
 	}
@@ -69,10 +68,6 @@ project "Engine"
 		systemversion "latest"
 		buildoptions { "/utf-8" }
 		toolset "v143"
-
-		defines{
-			"ENGINE_PLATFORM_WINDOWS"
-		}
 
 	filter "configurations:Debug"
 		defines "ENGINE_DEBUG"
@@ -120,10 +115,6 @@ project "CustomFontRenderer"
 		systemversion "latest"
 		buildoptions { "/utf-8" }
 		toolset "v143"
-
-		defines{
-			"ENGINE_PLATFORM_WINDOWS"
-		}
 
 	filter "configurations:Debug"
 		defines "ENGINE_DEBUG"

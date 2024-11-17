@@ -11,9 +11,11 @@ namespace Engine
 
 		virtual ~Camera() = default;
 
+		const glm::vec3& GetPosition() const;
 		void SetPosition(const glm::vec3& newPosition);
 		void Translate(const glm::vec3& translation);
 
+		const glm::vec3& GetRotation() const;
 		void SetRotation(const glm::vec3& newRotation);
 		void Rotate(const glm::vec3& rotation);
 
@@ -53,6 +55,9 @@ namespace Engine
 
 		void UpdateVectors();
 		void UpdateViewMatrix();
+
+		void NormalizeRotation();
+		float NormalizeAngle(float angle);
 
 	};
 }

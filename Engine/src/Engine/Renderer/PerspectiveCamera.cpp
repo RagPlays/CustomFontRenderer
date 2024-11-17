@@ -25,6 +25,8 @@ namespace Engine
 
 	void PerspectiveCamera::UpdateProjectionMatrix()
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		m_ProjectionMatrix = glm::perspective(glm::radians(m_FOV), m_AspectRatio, m_Near, m_Far);
 		//m_ProjectionMatrix[1][1] *= -1;
 	}

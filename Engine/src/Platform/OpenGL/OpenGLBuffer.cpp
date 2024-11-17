@@ -13,6 +13,8 @@ namespace Engine
         : m_RendererID{}
         , m_Layout{}
     {
+        ENGINE_PROFILE_FUNCTION();
+
         glCreateBuffers(1, &m_RendererID);
         glNamedBufferData(m_RendererID, size, nullptr, GL_DYNAMIC_DRAW);
     }
@@ -21,22 +23,30 @@ namespace Engine
         : m_RendererID{}
         , m_Layout{}
     {
+        ENGINE_PROFILE_FUNCTION();
+
         glCreateBuffers(1, &m_RendererID);
         glNamedBufferData(m_RendererID, size, vertices, GL_STATIC_DRAW);
     }
 
     OpenGLVertexBuffer::~OpenGLVertexBuffer()
     {
+        ENGINE_PROFILE_FUNCTION();
+
         glDeleteBuffers(1, &m_RendererID);
     }
 
     void OpenGLVertexBuffer::Bind() const
     {
+        ENGINE_PROFILE_FUNCTION();
+
         glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
     }
 
     void OpenGLVertexBuffer::Unbind() const
     {
+        ENGINE_PROFILE_FUNCTION();
+
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
@@ -64,22 +74,30 @@ namespace Engine
         : m_RendererID{}
         , m_Count{ count }
     {
+        ENGINE_PROFILE_FUNCTION();
+
         glCreateBuffers(1, &m_RendererID);
         glNamedBufferData(m_RendererID, count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
     }
 
     OpenGLIndexBuffer::~OpenGLIndexBuffer()
     {
+        ENGINE_PROFILE_FUNCTION();
+
         glDeleteBuffers(1, &m_RendererID);
     }
 
     void OpenGLIndexBuffer::Bind() const
     {
+        ENGINE_PROFILE_FUNCTION();
+
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
     }
 
     void OpenGLIndexBuffer::Unbind() const
     {
+        ENGINE_PROFILE_FUNCTION();
+
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 

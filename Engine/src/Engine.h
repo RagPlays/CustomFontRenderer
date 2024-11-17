@@ -5,7 +5,7 @@
 
 // --Application Basics--------------------------
 #include "Engine/Core/Structs.h"
-#include "Engine/Core/Timer.h"
+#include "Engine/Core/FrameTimer.h"
 #include "Engine/Core/Application.h"
 #include "Engine/Core/Layer.h"
 #include "Engine/Core/Base.h"
@@ -29,7 +29,6 @@
 #include "Engine/Renderer/Shader.h"
 #include "Engine/Renderer/Texture.h"
 #include "Engine/Renderer/VertexArray.h"
-#include "Engine/Renderer/Model.h"
 
 #include "Engine/Renderer/Camera.h"
 #include "Engine/Renderer/OrthographicCamera.h"

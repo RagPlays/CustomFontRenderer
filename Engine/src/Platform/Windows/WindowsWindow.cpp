@@ -26,6 +26,8 @@ namespace Engine
         : m_Window{}
         , m_Data{}
     {
+        ENGINE_PROFILE_FUNCTION();
+
         Init(props);
     }
 
@@ -36,7 +38,11 @@ namespace Engine
 
     void WindowsWindow::OnUpdate()
     {
-        glfwPollEvents();
+        ENGINE_PROFILE_FUNCTION();
+        {
+            ENGINE_PROFILE_SCOPE("WindowsWindow::OnUpdate-glfwPollEvents");
+            glfwPollEvents();
+        }
         m_Context->SwapBuffers();
     }
 
@@ -80,11 +86,17 @@ namespace Engine
 
         if (s_GLFWWindowCount == 0)
         {
-            //ENGINE_PROFILE_SCOPE("glfwInit");
-            const int success{ glfwInit() };
-            ENGINE_CORE_ASSERT(success, "Could not initialize GLFW!");
+            {
+                ENGINE_PROFILE_SCOPE("WindowsWindow::Init-glfwInit");
+                //ENGINE_PROFILE_SCOPE("glfwInit");
+                const int success{ glfwInit() };
+                ENGINE_CORE_ASSERT(success, "Could not initialize GLFW!");
+            }
+
+            glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_FALSE);
 
 #if defined ENGINE_DEBUG
+
             glfwSetErrorCallback(GLFWErrorCallback);
             ENGINE_CORE_INFO("Created window {0} ({1}, {2})", props.title, props.width, props.height);
 
@@ -96,7 +108,10 @@ namespace Engine
 #endif
         }
 
-        m_Window = glfwCreateWindow(static_cast<int>(props.width), static_cast<int>(props.height), m_Data.title.c_str(), nullptr, nullptr);
+        {
+            ENGINE_PROFILE_SCOPE("WindowsWindow::Init-glfwCreateWindow");
+            m_Window = glfwCreateWindow(static_cast<int>(props.width), static_cast<int>(props.height), m_Data.title.c_str(), nullptr, nullptr);
+        }
         ++s_GLFWWindowCount;
 
         // Context
@@ -206,6 +221,8 @@ namespace Engine
 
     void WindowsWindow::Shutdown()
     {
+        ENGINE_PROFILE_FUNCTION();
+
         glfwDestroyWindow(m_Window);
         --s_GLFWWindowCount;
 

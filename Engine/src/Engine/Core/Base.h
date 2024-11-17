@@ -1,10 +1,26 @@
 #ifndef CORE_H
 #define CORE_H
 
-#ifdef ENGINE_PLATFORM_WINDOWS
+#include "Engine/Core/PlatformDetection.h"
+
+#include <memory>
+
+#ifdef ENGINE_DEBUG
+#if defined(ENGINE_PLATFORM_WINDOWS)
+#define ENGINE_DEBUGBREAK() __debugbreak()
+#elif defined(ENGINE_PLATFORM_LINUX)
+#include <signal.h>
+#define ENGINE_DEBUGBREAK() raise(SIGTRAP)
 #else
-	#error Engine only supports windows!
+#error "Platform doesn't support debugbreak yet!"
 #endif
+#define ENGINE_ENABLE_ASSERTS
+#else
+#define ENGINE_DEBUGBREAK()
+#endif
+
+#define ENGINE_EXPAND_MACRO(x) x
+#define ENGINE_STRINGIFY_MACRO(x) #x
 
 #define BIT(x) (1 << x)
 
@@ -28,5 +44,10 @@ namespace Engine
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	}
 }
+
+#include "Engine/Core/EngineDefines.h"
+#include "Engine/Core/Log.h"
+#include "Engine/Core/Assert.h"
+#include "Engine/Debug/Instrumentor.h"
 
 #endif // !CORE_H

@@ -31,6 +31,8 @@ namespace Engine
 
 	void OpenGLRendererAPI::Init()
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 #if defined ENGINE_DEBUG
 		/*if (GLAD_GL_VERSION_4_3) ENGINE_CORE_INFO("OpenGL 4.3 is supported!");
 		else ENGINE_CORE_WARN("OpenGL 4.3 or greater is not supported!");*/

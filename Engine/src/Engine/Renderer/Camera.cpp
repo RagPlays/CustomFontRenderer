@@ -7,6 +7,11 @@
 namespace Engine
 {
 	// Public //
+	const glm::vec3& Camera::GetPosition() const
+	{
+		return m_Position;
+	}
+
 	void Camera::SetPosition(const glm::vec3& newPosition)
 	{
 		m_Position = newPosition;
@@ -21,9 +26,16 @@ namespace Engine
 		UpdateViewMatrix();
 	}
 
+	const glm::vec3& Camera::GetRotation() const
+	{
+		return m_Rotation;
+	}
+
 	void Camera::SetRotation(const glm::vec3& newRotation)
 	{
 		m_Rotation = newRotation;
+
+		NormalizeRotation();
 
 		UpdateVectors();
 		UpdateViewMatrix();
@@ -32,6 +44,8 @@ namespace Engine
 	void Camera::Rotate(const glm::vec3& offset)
 	{
 		m_Rotation += offset;
+
+		NormalizeRotation();
 
 		UpdateVectors();
 		UpdateViewMatrix();
@@ -98,6 +112,8 @@ namespace Engine
 	// Private //
 	void Camera::UpdateVectors()
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		constexpr glm::vec3 worldUp{ 0.0f, 1.0f, 0.0f };
 
 		// Forward
@@ -115,9 +131,28 @@ namespace Engine
 
 	void Camera::UpdateViewMatrix()
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		const glm::mat4 rotation{ glm::mat4_cast(glm::quat{ glm::radians(m_Rotation) }) };
 		const glm::mat4 transform{ glm::translate(glm::mat4{ 1.f }, m_Position) };
 
 		m_ViewMatrix = glm::inverse(transform * rotation);
+	}
+
+	void Camera::NormalizeRotation()
+	{
+		m_Rotation.x = NormalizeAngle(m_Rotation.x);
+		m_Rotation.y = NormalizeAngle(m_Rotation.y);
+		m_Rotation.z = NormalizeAngle(m_Rotation.z);
+	}
+
+	float Camera::NormalizeAngle(float angle)
+	{
+		constexpr float fullCircleAngle{ 360.f };
+		constexpr float halfCircleAngle{ fullCircleAngle / 2.f };
+
+		if (angle > halfCircleAngle) angle -= fullCircleAngle;
+		else if (angle <= -halfCircleAngle) angle += fullCircleAngle;
+		return angle;
 	}
 }

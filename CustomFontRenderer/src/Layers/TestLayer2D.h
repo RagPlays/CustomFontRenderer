@@ -1,9 +1,11 @@
 #ifndef TESTLAYER2D_H
 #define TESTLAYER2D_H
 
+#include <vector>
+
 #include <Engine.h>
 
-#include "CameraControllers/OrthographicCameraController.h"
+#include "CameraControllers/OrthoCamController.h"
 
 class TestLayer2D : public Engine::Layer
 {
@@ -26,11 +28,21 @@ private:
 
 private:
 
-	OrthographicCameraController m_CameraController;
+	OrthoCamController m_CameraController;
 
 	// temp
-	Engine::Ref<Engine::Texture2D> m_TestTexture;
-	glm::vec4 m_SquareColor;
+	Engine::Ref<Engine::Texture2D> m_CheckerBoardTexture;
+	Engine::Ref<Engine::Texture2D> m_TestTexOne;
+	Engine::Ref<Engine::Texture2D> m_TestTexTwo;
+	Engine::Ref<Engine::Texture2D> m_TestTexThree;
+	Engine::Ref<Engine::Texture2D> m_TestTexFour;
+
+	float rotationZ{};
+	glm::vec4 m_SquareOneColor;
+	glm::vec4 m_SquareTwoColor;
+
+	int nrOfFrames;
+	float elapsedTime;
 
 };
 

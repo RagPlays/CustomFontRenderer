@@ -1,4 +1,7 @@
 #include "enginepch.h"
+
+#if ENGINE_LOGGING
+
 #include "Log.h"
 
 #include <spdlog/sinks/stdout_color_sinks.h>
@@ -39,3 +42,5 @@ namespace Engine
 		return s_ClientLogger;
 	}
 }
+
+#endif

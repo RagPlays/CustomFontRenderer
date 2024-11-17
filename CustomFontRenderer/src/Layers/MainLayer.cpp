@@ -1,17 +1,19 @@
 #include "MainLayer.h"
 
-#include <imgui/imgui.h>
+#include <array>
 
 #include <glm/gtc/type_ptr.hpp>
+#include <imgui/imgui.h>
 
 using namespace Engine;
 
 MainLayer::MainLayer()
 	: Layer{ "MainLayer" }
 	, m_CameraController{ 5.f, 1.6f / 0.9f, -1.f, 1.f, true }
-	, m_TriangleModel{}
 	, m_SquareColor{ 0.2f, 0.2f, 0.8f, 1.f }
-	, m_SquareModel{}
+	, m_TriangleRotationZ{}
+	//, m_TriangleModel{}
+	//, m_SquareModel{}
 {
 	// Triangle //
 	Ref<VertexArray> triangleVA{ VertexArray::Create() };
@@ -71,8 +73,8 @@ MainLayer::MainLayer()
 	m_TextureShader->Bind();
 	m_TextureShader->SetInt("u_Texture", 0);
 
-	m_TriangleModel = CreateScope<Model>(m_BasicShader, triangleVA);
-	m_SquareModel = CreateScope<Model>(m_FlatColorShader, squareVA);
+	//m_TriangleModel = CreateScope<Model>(m_BasicShader, triangleVA);
+	//m_SquareModel = CreateScope<Model>(m_FlatColorShader, squareVA);
 
 	m_Texture = Texture2D::Create("assets/textures/testTexture2.png");
 	m_TransparentTexture = Texture2D::Create("assets/textures/transparentTexture.png");
@@ -88,6 +90,7 @@ void MainLayer::OnImGuiRender()
 {
 	ImGui::Begin("Settings");
 	ImGui::ColorEdit3("Square Color", glm::value_ptr(m_SquareColor));
+	ImGui::InputFloat("Triangle Rotation", &m_TriangleRotationZ);
 	ImGui::End();
 }
 
@@ -100,10 +103,8 @@ void MainLayer::Update()
 {
 	m_CameraController.Update();
 
-	const Timer& timer{ Timer::Get() };
+	const FrameTimer& timer{ FrameTimer::Get() };
 	const float deltaTime{ timer.GetSeconds() };
-
-	m_TriangleModel->Rotate(glm::vec3{ 0.f, 0.f, -45.f } * deltaTime);
 
 	m_FlatColorShader->Bind();
 	m_FlatColorShader->SetFloat4("u_Color", m_SquareColor);
@@ -111,12 +112,15 @@ void MainLayer::Update()
 
 void MainLayer::Render() const
 {
-	const Timer& timer{ Timer::Get() };
+	const FrameTimer& timer{ FrameTimer::Get() };
 	const float deltaTime{ timer.GetSeconds() };
 	const glm::mat4 viewProj{ m_CameraController.GetCamera().GetViewProjectionMatrix() };
 
 	RenderCommand::SetClearColor({ 0.15f, 0.15f, 0.15f, 1.f });
-	RenderCommand::Clear(true, false);
+	RenderCommand::Clear();
+
+	//m_TriangleModel->SetRotation(glm::vec3{ 0.f, 0.f, m_TriangleRotationZ });
+	/*m_TriangleModel->Submit(viewProj);
 
 	m_SquareModel->SetScale(glm::vec3{ 0.1f, 0.1f, 0.1f });
 	m_SquareModel->SetShader(m_FlatColorShader);
@@ -137,7 +141,6 @@ void MainLayer::Render() const
 	m_SquareModel->Submit(viewProj);
 
 	m_TransparentTexture->Bind();
-	m_SquareModel->Submit(viewProj);
+	m_SquareModel->Submit(viewProj);*/
 
-	m_TriangleModel->Submit(viewProj);
 }

@@ -25,6 +25,8 @@ namespace Engine
 
 	void ImGuiLayer::OnAttach()
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -60,19 +62,17 @@ namespace Engine
 
 	void ImGuiLayer::OnDetach()
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
 	}
 
-	void ImGuiLayer::OnImGuiRender()
-	{
-		//static bool show{ true };
-		//ImGui::ShowDemoWindow(&show);
-	}
-
 	void ImGuiLayer::Begin()
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
@@ -81,6 +81,8 @@ namespace Engine
 
 	void ImGuiLayer::End()
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		// Get display size
 		Application& app{ Application::Get() };
 		const ImVec2 displaySize{ static_cast<float>(app.GetWindow().GetWidth()), static_cast<float>(app.GetWindow().GetHeight()) };
@@ -140,8 +142,8 @@ namespace Engine
 		colors[ImGuiCol_TitleBgCollapsed] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
 	}
 
-	uint32_t ImGuiLayer::GetActiveWidgetID() const
+	/*uint32_t ImGuiLayer::GetActiveWidgetID() const
 	{
 		return 0;
-	}
+	}*/
 }

@@ -6,7 +6,7 @@
 namespace Engine
 {
 	OrthographicCamera::OrthographicCamera(float nearDist, float farDist)
-		: OrthographicCamera{-1.f, 1.f, -1.f, 1.f, nearDist, farDist }
+		: OrthographicCamera{ -1.f, 1.f, -1.f, 1.f, nearDist, farDist }
 	{
 	}
 
@@ -22,6 +22,8 @@ namespace Engine
 
 	void OrthographicCamera::SetProjection(float left, float right, float bottom, float top)
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		m_Left = left;
 		m_Right = right;
 		m_Bottom = bottom;
@@ -32,6 +34,8 @@ namespace Engine
 
 	void OrthographicCamera::UpdateProjectionMatrix()
 	{
+		ENGINE_PROFILE_FUNCTION();
+
 		m_ProjectionMatrix = glm::ortho(m_Left, m_Right, m_Bottom, m_Top, -100.f, 100.f);
 	}
 }
