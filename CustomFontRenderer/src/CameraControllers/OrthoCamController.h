@@ -14,7 +14,7 @@ class OrthoCamController final
 {
 public:
 
-	explicit OrthoCamController(float cameraSpeed, float aspectRatio, float nearDist, float farDist, bool canRotate);
+	explicit OrthoCamController(float cameraSpeed, float nearDist, float farDist, bool canRotate);
 	~OrthoCamController() = default;
 
 	void Update();

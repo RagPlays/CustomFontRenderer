@@ -168,7 +168,7 @@ namespace Engine
 
 	Rect2f::Rect2f(float x, float y, float width, float height)
 		: position{ x, y }
-		, size{ size }
+		, size{ width, height }
 	{
 	}
 
@@ -180,7 +180,7 @@ namespace Engine
 
 	Rect2f::Rect2f(const glm::vec2& pos, float width, float height)
 		: position{ pos.x, pos.y }
-		, size{ size }
+		, size{ width, height }
 	{
 	}
 
@@ -294,7 +294,7 @@ namespace Engine
 	{
 	}
 
-	Circle2i::Circle2i(float centerX, float centerY, float radius)
+	Circle2i::Circle2i(int centerX, int centerY, float radius)
 		: center{ centerX, centerY }
 		, radius{ radius }
 	{
@@ -315,6 +315,46 @@ namespace Engine
 
 	Circle2f::Circle2f(float centerX, float centerY, float radius)
 		: center{ centerX, centerY }
+		, radius{ radius }
+	{
+	}
+
+	//
+
+	Circle3i::Circle3i()
+		: center{ 0, 0, 0 }
+		, radius{ 0.f }
+	{
+	}
+
+	Circle3i::Circle3i(const glm::ivec3& center, float radius)
+		: center{ center }
+		, radius{ radius }
+	{
+	}
+
+	Circle3i::Circle3i(int centerX, int centerY, int centerZ, float radius)
+		: center{ centerX, centerY, centerZ }
+		, radius{ radius }
+	{
+	}
+
+	//
+
+	Circle3f::Circle3f()
+		: center{ 0.f, 0.f, 0.f }
+		, radius{ 0.f }
+	{
+	}
+
+	Circle3f::Circle3f(const glm::vec3& center, float radius)
+		: center{ center }
+		, radius{ radius }
+	{
+	}
+
+	Circle3f::Circle3f(float centerX, float centerY, float centerZ, float radius)
+		: center{ centerX, centerY, centerZ }
 		, radius{ radius }
 	{
 	}

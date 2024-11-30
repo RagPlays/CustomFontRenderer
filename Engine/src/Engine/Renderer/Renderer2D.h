@@ -14,6 +14,9 @@ namespace Engine
 	struct Rect2f;
 	struct Rect3f;
 
+	struct Circle2f;
+	struct Circle3f;
+
 	class Renderer2D final
 	{
 	public:
@@ -33,7 +36,6 @@ namespace Engine
 		static void BeginScene(const Camera& camera);
 		static void BeginScene(const glm::mat4& viewProjectionMatrix);
 		static void EndScene();
-		static void Flush();
 
 		static const glm::vec4& GetDrawColor();
 		static void SetDrawColor(const glm::vec4& drawColor);
@@ -41,22 +43,48 @@ namespace Engine
 		static float GetLineWidth();
 		static void SetLineWidth(float width);
 
+		static float GetPointSize();
+		static void SetPointSize(float size);
+
 		// Drawing //
+		// Points
+		static void DrawPoint(const glm::vec2& position);
+		static void DrawPoint(const glm::vec3& position);
 
 		// Lines
+		static void DrawLine(const glm::vec2& p0, const glm::vec2& p1);
+		static void DrawLine(const glm::vec3& p0, const glm::vec3& p1);
 
 		// Rect
+
+		// Rect Filled
 		static void DrawFilledRect(const Rect2f& rect);
 		static void DrawFilledRect(const Rect3f& rect);
 		static void DrawFilledRect(const glm::vec2& position, const glm::vec2& size);
 		static void DrawFilledRect(const glm::vec3& position, const glm::vec2& size);
 
-		static void DrawFilledRect(const Rect2f& rect, float rotationAngle);
-		static void DrawFilledRect(const Rect3f& rect, float rotationAngle);
-		static void DrawFilledRect(const glm::vec2& position, const glm::vec2& size, float rotationAngle);
-		static void DrawFilledRect(const glm::vec3& position, const glm::vec2& size, float rotationAngle);
+		static void DrawFilledRect(const Rect2f& rect, float radAngle);
+		static void DrawFilledRect(const Rect3f& rect, float radAngle);
+		static void DrawFilledRect(const glm::vec2& position, const glm::vec2& size, float radAngle);
+		static void DrawFilledRect(const glm::vec3& position, const glm::vec2& size, float radAngle);
 
 		static void DrawFilledRect(const glm::mat4& modelMatrix);
+
+		// Circle
+		static void DrawCircle(const Circle2f& circle, float thickness = 0.1f, float fade = 0.005f);
+		static void DrawCircle(const Circle3f& circle, float thickness = 0.1f, float fade = 0.005f);
+		static void DrawCircle(const glm::vec2& center, float radius, float thickness = 0.1f, float fade = 0.005f);
+		static void DrawCircle(const glm::vec3& center, float radius, float thickness = 0.1f, float fade = 0.005f);
+
+		static void DrawCircle(const glm::mat4& modelMatrix, float thickness = 0.1f, float fade = 0.005f);
+
+		// Circle Filled
+		static void DrawFilledCircle(const Circle2f& circle, float fade = 0.005f);
+		static void DrawFilledCircle(const Circle3f& circle, float fade = 0.005f);
+		static void DrawFilledCircle(const glm::vec2& center, float radius, float fade = 0.005f);
+		static void DrawFilledCircle(const glm::vec3& center, float radius, float fade = 0.005f);
+
+		static void DrawFilledCircle(const glm::mat4& modelMatrix, float fade = 0.005f);
 
 		// Polygons
 
@@ -68,21 +96,29 @@ namespace Engine
 		static void DrawTexture(const Ref<Texture2D>&, const glm::vec2& position, const glm::vec2& size, const glm::vec4& tintColor = Color::white, float tilingFactor = 1.f);
 		static void DrawTexture(const Ref<Texture2D>&, const glm::vec3& position, const glm::vec2& size, const glm::vec4& tintColor = Color::white, float tilingFactor = 1.f);
 
-		static void DrawTexture(const Ref<Texture2D>&, const Rect2f& rect, float rotationAngle, const glm::vec4& tintColor = Color::white, float tilingFactor = 1.f);
-		static void DrawTexture(const Ref<Texture2D>&, const Rect3f& rect, float rotationAngle, const glm::vec4& tintColor = Color::white, float tilingFactor = 1.f);
-		static void DrawTexture(const Ref<Texture2D>&, const glm::vec2& position, float rotationAngle, const glm::vec4& tintColor = Color::white, float tilingFactor = 1.f);
-		static void DrawTexture(const Ref<Texture2D>&, const glm::vec3& position, float rotationAngle, const glm::vec4& tintColor = Color::white, float tilingFactor = 1.f);
-		static void DrawTexture(const Ref<Texture2D>&, const glm::vec2& position, const glm::vec2& size, float rotationAngle, const glm::vec4& tintColor = Color::white, float tilingFactor = 1.f);
-		static void DrawTexture(const Ref<Texture2D>&, const glm::vec3& position, const glm::vec2& size, float rotationAngle, const glm::vec4& tintColor = Color::white, float tilingFactor = 1.f);
+		static void DrawTexture(const Ref<Texture2D>&, const Rect2f& rect, float radAngle, const glm::vec4& tintColor = Color::white, float tilingFactor = 1.f);
+		static void DrawTexture(const Ref<Texture2D>&, const Rect3f& rect, float radAngle, const glm::vec4& tintColor = Color::white, float tilingFactor = 1.f);
+		static void DrawTexture(const Ref<Texture2D>&, const glm::vec2& position, float radAngle, const glm::vec4& tintColor = Color::white, float tilingFactor = 1.f);
+		static void DrawTexture(const Ref<Texture2D>&, const glm::vec3& position, float radAngle, const glm::vec4& tintColor = Color::white, float tilingFactor = 1.f);
+		static void DrawTexture(const Ref<Texture2D>&, const glm::vec2& position, const glm::vec2& size, float radAngle, const glm::vec4& tintColor = Color::white, float tilingFactor = 1.f);
+		static void DrawTexture(const Ref<Texture2D>&, const glm::vec3& position, const glm::vec2& size, float radAngle, const glm::vec4& tintColor = Color::white, float tilingFactor = 1.f);
 
 		static void DrawTexture(const Ref<Texture2D>&, const glm::mat4& modelMatrix, const glm::vec4& tintColor = Color::white, float tilingFactor = 1.f);
 
 		struct Statistics
 		{
 			uint32_t drawCalls{};
+			uint32_t pointCount{};
+			uint32_t lineCount{};
 			uint32_t quadCount{};
+			uint32_t circleCount{};
 
-			uint32_t GetTotalVerticesCount() const { return quadCount * 4; }
+			uint32_t GetTotalVerticesCount() const
+			{
+				const uint32_t quadVerticesCount{ quadCount * 4 };
+				const uint32_t lineVerticesCount{ lineCount * 2 };
+				return pointCount + lineVerticesCount + quadVerticesCount;
+			}
 			uint32_t GetTotalIndicesCount() const { return quadCount * 6; }
 		};
 		static void ResetStats();
@@ -90,8 +126,26 @@ namespace Engine
 
 	private:
 
-		static void StartBach();
-		static void NextBatch();
+		static void SetShadersViewProjection(const glm::mat4& viewProj);
+
+		static void NextPointBatch();
+		static void NextLineBatch();
+		static void NextQuadBatch();
+		static void NextCircleBatch();
+
+		static void ResetAllBatches();
+
+		static void ResetPointBatch();
+		static void ResetLineBatch();
+		static void ResetQuadBatch();
+		static void ResetCircleBatch();
+		static void ResetTextureBatch();
+
+		static void FlushAll();
+		static void FlushPoints();
+		static void FlushLines();
+		static void FlushQuads();
+		static void FlushCircles();
 
 	};
 }

@@ -1,6 +1,8 @@
 #ifndef IMGUILAYER_H
 #define IMGUILAYER_H
 
+#if ENGINE_IMGUI
+
 #include "Engine/Core/Layer.h"
 
 #include "Engine/Events/ApplicationEvent.h"
@@ -26,8 +28,6 @@ namespace Engine
 
 		void SetDarkThemeColors();
 
-		//uint32_t GetActiveWidgetID() const;
-
 	private:
 
 		float m_Time;
@@ -35,5 +35,7 @@ namespace Engine
 
 	};
 }
+
+#endif
 
 #endif // !IMGUILAYER_H

@@ -71,13 +71,15 @@ namespace Engine
 	private:
 
 		std::unique_ptr<Window> m_Window;
-		ImGuiLayer* m_ImguiLayer;
+
 		bool m_Running;
 		bool m_Minimized;
 
 		LayerContainer m_LayerContainer;
 
-	private:
+#if ENGINE_IMGUI
+		ImGuiLayer* m_ImguiLayer;
+#endif
 
 	private:
 

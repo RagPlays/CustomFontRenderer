@@ -30,9 +30,10 @@ namespace Engine
 		virtual void SetClearColor(const glm::vec4& color) override;
 		virtual void Clear(bool clearColor, bool clearDepth) override;
 
-		virtual void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0) override;
-		virtual void DrawLines(const Ref<VertexArray>& vertexArray, uint32_t vertexCount) override;
+		virtual void DrawVertices(const Ref<VertexArray>& vertexArray, uint32_t vertexCount, RenderMode mode = RenderMode::Lines) override;
+		virtual void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0, RenderMode mode = RenderMode::Triangle) override;
 
+		virtual void SetPointSize(float size) override;
 		virtual void SetLineWidth(float width) override;
 
 	};

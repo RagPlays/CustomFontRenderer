@@ -9,7 +9,7 @@ using namespace Engine;
 
 MainLayer::MainLayer()
 	: Layer{ "MainLayer" }
-	, m_CameraController{ 5.f, 1.6f / 0.9f, -1.f, 1.f, true }
+	, m_CameraController{ 5.f, -1.f, 1.f, true }
 	, m_SquareColor{ 0.2f, 0.2f, 0.8f, 1.f }
 	, m_TriangleRotationZ{}
 	//, m_TriangleModel{}

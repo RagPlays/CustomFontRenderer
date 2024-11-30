@@ -37,12 +37,8 @@ private:
 	Engine::Ref<Engine::Texture2D> m_TestTexThree;
 	Engine::Ref<Engine::Texture2D> m_TestTexFour;
 
-	float rotationZ{};
-	glm::vec4 m_SquareOneColor;
-	glm::vec4 m_SquareTwoColor;
-
-	int nrOfFrames;
-	float elapsedTime;
+	glm::vec4 m_ColorOne;
+	glm::vec4 m_ColorTwo;
 
 };
 

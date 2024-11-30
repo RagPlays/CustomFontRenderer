@@ -88,7 +88,6 @@ namespace Engine
         {
             {
                 ENGINE_PROFILE_SCOPE("WindowsWindow::Init-glfwInit");
-                //ENGINE_PROFILE_SCOPE("glfwInit");
                 const int success{ glfwInit() };
                 ENGINE_CORE_ASSERT(success, "Could not initialize GLFW!");
             }
@@ -110,7 +109,33 @@ namespace Engine
 
         {
             ENGINE_PROFILE_SCOPE("WindowsWindow::Init-glfwCreateWindow");
-            m_Window = glfwCreateWindow(static_cast<int>(props.width), static_cast<int>(props.height), m_Data.title.c_str(), nullptr, nullptr);
+
+            GLFWmonitor* monitor{};
+
+            if (props.fullScreen)
+            {
+                // Get the primary monitor and its video mode
+                monitor = glfwGetPrimaryMonitor();
+                ENGINE_CORE_ASSERT(monitor, "Failed to get primary monitor for fullscreen mode!");
+
+                const GLFWvidmode* videoMode{ glfwGetVideoMode(monitor) };
+                ENGINE_CORE_ASSERT(videoMode, "Failed to get video mode for fullscreen mode!");
+
+                if (monitor && videoMode)
+                {
+                    m_Data.width = videoMode->width;
+                    m_Data.height = videoMode->height;
+                }
+            }
+
+            m_Window = glfwCreateWindow
+            (
+                props.width,
+                props.height,
+                m_Data.title.c_str(),
+                monitor,
+                nullptr
+            );
         }
         ++s_GLFWWindowCount;
 
@@ -120,7 +145,7 @@ namespace Engine
 
         glfwSetWindowUserPointer(m_Window, &m_Data);
 
-        SetVSync(true);
+        SetVSync(props.vsync);
 
         InitCallbacks();
     }

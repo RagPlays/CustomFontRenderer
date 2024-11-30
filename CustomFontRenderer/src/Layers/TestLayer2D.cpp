@@ -8,11 +8,9 @@ using namespace Engine;
 
 TestLayer2D::TestLayer2D()
 	: Layer{ "TestLayer2D" }
-	, m_CameraController{ 5.f, 1.6f / 0.9f, -1.f, 1.f, true }
-	, m_SquareOneColor{ 0.2f, 0.3f, 0.8f, 1.f }
-	, m_SquareTwoColor{ 0.8f, 0.3f, 0.2f, 1.f }
-	, nrOfFrames{}
-	, elapsedTime{}
+	, m_CameraController{ 5.f, -1.f, 1.f, true }
+	, m_ColorOne{ 0.8f, 0.3f, 0.2f, 1.f }
+	, m_ColorTwo{ 0.2f, 0.2f, 0.2f, 1.f }
 {
 }
 
@@ -37,16 +35,6 @@ void TestLayer2D::OnUpdate()
 {
 	ENGINE_PROFILE_FUNCTION();
 
-	// timer
-	++nrOfFrames;
-	elapsedTime += FrameTimer::Get().GetSeconds();
-	if (elapsedTime > 1.f)
-	{
-		ENGINE_CORE_INFO("FPS: {0}", nrOfFrames / 1.f);
-		elapsedTime -= 1.f;
-		nrOfFrames = 0;
-	}
-
 	Update();
 	Render();
 }
@@ -58,10 +46,11 @@ void TestLayer2D::OnImGuiRender()
 	const Camera& camera{ m_CameraController.GetCamera() };
 	const glm::vec3& position{ camera.GetPosition() };
 	const glm::vec3& rotation{ camera.GetRotation() };
-	float cameraZoom{ m_CameraController.GetZoom() };
+	const float cameraZoom{ m_CameraController.GetZoom() };
 
 	ImGui::Begin("CameraInfo");
 	{
+		ImGui::SetWindowFontScale(2.f);
 		ImGui::Text("Position");
 		ImGui::Text("X: %.2f Y: %.2f Z: %.2f", position.x, position.y, position.z);
 		ImGui::Text("Rotation");
@@ -73,18 +62,38 @@ void TestLayer2D::OnImGuiRender()
 
 	ImGui::Begin("SceneSettings");
 	{
-		ImGui::ColorEdit4("Square One Color", glm::value_ptr(m_SquareOneColor));
-		ImGui::ColorEdit4("Square Two Color", glm::value_ptr(m_SquareTwoColor));
-		ImGui::DragFloat("RotationZ", &rotationZ, 1.0f, -180.0f, 180.0f, "%.1f");
+		ImGui::SetWindowFontScale(2.f);
+		ImGui::ColorEdit4("Color One", glm::value_ptr(m_ColorOne));
+		ImGui::ColorEdit4("Color Two", glm::value_ptr(m_ColorTwo));
 	}
 	ImGui::End();
 
+	// timer
+	static int nrOfFrames{};
+	static float elapsedTime{};
+	static float lastFPS{};
+	++nrOfFrames;
+	elapsedTime += FrameTimer::Get().GetSeconds();
+	if (elapsedTime > 1.f)
+	{
+		lastFPS = static_cast<float>(nrOfFrames) / elapsedTime;
+		elapsedTime = 0.f;
+		nrOfFrames = 0;
+	}
+
 	ImGui::Begin("RendererStats");
 	{
+		ImGui::SetWindowFontScale(2.f);
+		ImGui::Text("General Stats:");
+		ImGui::Text("FPS: %f", lastFPS);
+
 		const auto& stats{ Renderer2D::GetStats() };
 		ImGui::Text("Renderer2D Stats:");
 		ImGui::Text("Draw Calls: %d", stats.drawCalls);
+		ImGui::Text("Point Count: %d", stats.pointCount);
+		ImGui::Text("Line Count: %d", stats.lineCount);
 		ImGui::Text("Quad Count: %d", stats.quadCount);
+		ImGui::Text("Circle Count %d", stats.circleCount);
 		ImGui::Text("Vertices Count: %d", stats.GetTotalVerticesCount());
 		ImGui::Text("Indices Count: %d", stats.GetTotalIndicesCount());
 	}
@@ -125,28 +134,66 @@ void TestLayer2D::Render() const
 
 		Renderer2D::BeginScene(m_CameraController.GetCamera());
 		{
-			Renderer2D::SetDrawColor({ 0.8f, 0.3f, 0.2f, 1.f });
-			Renderer2D::DrawFilledRect({ 1.f, 0.f }, { 0.8f, 0.8f }, -45.f);
+			// Rects
+			Renderer2D::SetDrawColor(m_ColorOne);
+			Renderer2D::DrawFilledRect({ 1.f, 0.f }, { 0.8f, 0.8f }, glm::radians(-45.f));
 			Renderer2D::DrawFilledRect({ -1.f, 0.f }, { 0.8f, 0.8f });
-			Renderer2D::SetDrawColor({ 0.2f, 0.3f, 0.8f, 1.f });
+			Renderer2D::SetDrawColor(m_ColorTwo);
 			Renderer2D::DrawFilledRect({ 0.5f, -0.5f }, { 0.5f, 0.75f });
-			Renderer2D::SetDrawColor(Color::darkGray);
+			
+			// Textures
 			Renderer2D::DrawTexture(m_CheckerBoardTexture, { 0.f, 0.f, -0.1f }, { 20.f, 20.f }, Color::white, 10.f);
-			Renderer2D::DrawTexture(m_CheckerBoardTexture, { -2.f, 0.f, 0.f }, { 1.f, 1.f }, rotation, Color::white, 20.f);
-		}
-		Renderer2D::EndScene();
+			Renderer2D::DrawTexture(m_CheckerBoardTexture, { -2.f, 0.f, 0.f }, { 1.f, 1.f }, glm::radians(rotation), Color::white, 20.f);
 
-		Renderer2D::BeginScene(m_CameraController.GetCamera());
-		{
-			for (float y{ -5.f }; y < 5.f; y += 0.1f)
+			// Lines
+			Renderer2D::SetLineWidth(7.f);
+			Renderer2D::SetDrawColor(Color::red);
+			Renderer2D::DrawLine({ -10.f, 0.f, 0.2f }, { 10.f, 0.f, 0.3f });
+			Renderer2D::SetDrawColor(Color::green);
+			Renderer2D::DrawLine({ 0.f, -10.f, 0.2f }, { 0.f, 10.f, 0.3f });
+
+			// Points
+			Renderer2D::SetPointSize(7.f);
+			Renderer2D::SetDrawColor(Color::green);
+			Renderer2D::DrawPoint({ -1.f, -1.f, 0.3 });
+			Renderer2D::DrawPoint({ -1.f, 1.f, 0.3 });
+			Renderer2D::DrawPoint({ 1.f, -1.f, 0.3 });
+			Renderer2D::DrawPoint({ 1.f, 1.f, 0.3 });
+			Renderer2D::SetDrawColor(Color::cyan);
+			Renderer2D::DrawPoint({ -5.f, 5.f, 0.3f });
+			Renderer2D::DrawPoint({ -5.f, -5.f, 0.3f });
+			Renderer2D::DrawPoint({ 5.f, 5.f, 0.3f });
+			Renderer2D::DrawPoint({ 5.f, -5.f, 0.3f });
+			Renderer2D::SetDrawColor(Color::red);
+			Renderer2D::DrawPoint({-10.f, -10.f, 0.3f});
+			Renderer2D::DrawPoint({-10.f, 10.f, 0.3f});
+			Renderer2D::DrawPoint({10.f, -10.f, 0.3f});
+			Renderer2D::DrawPoint({10.f, 10.f, 0.3f});
+
+			for (float y{ -5.f }; y < 5.f; y += 0.5f)
 			{
-				for (float x{ -5.f }; x < 5.f; x += 0.1f)
+				for (float x{ -5.f }; x < 5.f; x += 0.5f)
 				{
 					const glm::vec4 color{ ((x + 5.0f) / 10.f), 0.5f, (y + 5.f) / 10.f, 0.5f };
 					Renderer2D::SetDrawColor(color);
-					Renderer2D::DrawFilledRect({ x, y }, { 0.45f, 0.45f });
+					Renderer2D::DrawFilledRect({ x + 0.25f, y + 0.25 }, { 0.45f, 0.45f });
 				}
 			}
+			
+			constexpr float circleThickness{ 0.125f };
+			constexpr float circleRadius{ 1.25f };
+			constexpr float smallCircleRadius{ 1.f };
+			Renderer2D::SetDrawColor(m_ColorOne);
+			Renderer2D::DrawCircle(Circle3f{ glm::vec3{ 10.f - circleRadius, 10.f - circleRadius, 0.6f }, circleRadius }, circleThickness);
+			Renderer2D::DrawCircle(Circle3f{ glm::vec3{ 10.f - circleRadius, -10.f + circleRadius, 0.6f }, circleRadius }, circleThickness);
+			Renderer2D::DrawCircle(Circle3f{ glm::vec3{ -10.f + circleRadius, 10.f - circleRadius, 0.6f }, circleRadius }, circleThickness);
+			Renderer2D::DrawCircle(Circle3f{ glm::vec3{ -10.f + circleRadius, -10.f + circleRadius, 0.6f }, circleRadius }, circleThickness);
+
+			Renderer2D::SetDrawColor(m_ColorTwo);
+			Renderer2D::DrawFilledCircle(Circle3f{ glm::vec3{ 10.f - circleRadius, 10.f - circleRadius, 0.6f }, smallCircleRadius });
+			Renderer2D::DrawFilledCircle(Circle3f{ glm::vec3{ 10.f - circleRadius, -10.f + circleRadius, 0.6f }, smallCircleRadius });
+			Renderer2D::DrawFilledCircle(Circle3f{ glm::vec3{ -10.f + circleRadius, 10.f - circleRadius, 0.6f }, smallCircleRadius });
+			Renderer2D::DrawFilledCircle(Circle3f{ glm::vec3{ -10.f + circleRadius, -10.f + circleRadius, 0.6f }, smallCircleRadius });
 		}
 		Renderer2D::EndScene();
 	}

@@ -23,9 +23,10 @@ namespace Engine
 		static void SetClearColor(const glm::vec4& color);
 		static void Clear(bool clearColor = true, bool clearDepth = true);
 
-		static void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t indexCount = 0);
-		static void DrawLines(const std::shared_ptr<VertexArray>& vertexArray, uint32_t vertexCount);
+		static void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0, RenderMode mode = RenderMode::Triangle);
+		static void DrawVertices(const Ref<VertexArray>& vertexArray, uint32_t vertexCount, RenderMode mode = RenderMode::Lines);
 
+		static void SetPointSize(float size);
 		static void SetLineWidth(float width);
 
 	private:

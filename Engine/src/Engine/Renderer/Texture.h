@@ -88,6 +88,7 @@ namespace Engine
 
 		static Ref<Texture2D> Create(const TextureSpecification& specification);
 		static Ref<Texture2D> Create(const std::string& path, const TextureParameters& params = TextureParameters{});
+
 	};
 
 }

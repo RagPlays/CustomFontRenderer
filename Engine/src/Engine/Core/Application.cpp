@@ -7,8 +7,7 @@
 
 #include "Engine/Renderer/Renderer.h"
 
-#define IMGUI_ENABLED
-#if defined IMGUI_ENABLED
+#if ENGINE_IMGUI
 #include "Engine/ImGui/ImGuiLayer.h"
 #endif
 
@@ -20,7 +19,9 @@ namespace Engine
 		: m_Window{ nullptr }
 		, m_Running{ true }
 		, m_Minimized{ false }
+#if ENGINE_IMGUI
 		, m_ImguiLayer{ nullptr }
+#endif
 	{
 		ENGINE_PROFILE_FUNCTION();
 
@@ -29,7 +30,7 @@ namespace Engine
 		s_Instance = this;
 
 		// Create Window
-		m_Window = Window::Create();
+		m_Window = Window::Create(WindowProps{ "Engine", 1920, 1080, true, false });
 
 		// Set WindowEventCallBack
 		m_Window->SetEventCallback(ENGINE_BIND_EVENT_FN(Application::OnEvent));
@@ -37,7 +38,7 @@ namespace Engine
 		// Init Timer and Renderer
 		Renderer::Init();
 		
-#if defined IMGUI_ENABLED
+#if ENGINE_IMGUI
 		// Set Imgui start layer
 		m_ImguiLayer = new ImGuiLayer{};
 		AddOverlay(m_ImguiLayer); 
@@ -116,8 +117,7 @@ namespace Engine
 
 	void Application::RenderImGui()
 	{
-#if defined IMGUI_ENABLED
-
+#if ENGINE_IMGUI
 		ENGINE_PROFILE_FUNCTION();
 
 		m_ImguiLayer->Begin();

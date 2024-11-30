@@ -1,4 +1,6 @@
 #include "enginepch.h"
+
+#if ENGINE_IMGUI
 #include "ImGuiLayer.h"
 
 #include <imgui.h>
@@ -147,3 +149,5 @@ namespace Engine
 		return 0;
 	}*/
 }
+
+#endif

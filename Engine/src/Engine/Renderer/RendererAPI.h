@@ -10,6 +10,19 @@
 
 namespace Engine
 {
+	enum class RenderMode
+	{
+		Points,
+
+		Lines,
+		LineStrip,
+		LineLoop,
+
+		Triangle,
+		TriangleStrip,
+		TriangleFan,
+	};
+
 	class RendererAPI
 	{
 	public:
@@ -28,9 +41,10 @@ namespace Engine
 		virtual void SetClearColor(const glm::vec4& color) = 0;
 		virtual void Clear(bool clearColor, bool clearDepth) = 0;
 
-		virtual void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t indexCount = 0) = 0;
-		virtual void DrawLines(const std::shared_ptr<VertexArray>& vertexArray, uint32_t vertexCount) = 0;
+		virtual void DrawVertices(const Ref<VertexArray>& vertexArray, uint32_t vertexCount, RenderMode mode = RenderMode::Lines) = 0;
+		virtual void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0, RenderMode mode = RenderMode::Triangle) = 0;
 
+		virtual void SetPointSize(float size) = 0;
 		virtual void SetLineWidth(float width) = 0;
 
 		static API GetAPI();

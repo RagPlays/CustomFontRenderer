@@ -142,7 +142,7 @@ namespace Engine
 	{
 		Circle2i();
 		explicit Circle2i(const glm::ivec2& center, float radius);
-		explicit Circle2i(float centerX, float centerY, float radius);
+		explicit Circle2i(int centerX, int centerY, float radius);
 
 		glm::ivec2 center;
 		float radius;
@@ -155,6 +155,26 @@ namespace Engine
 		explicit Circle2f(float centerX, float centerY, float radius);
 
 		glm::vec2 center;
+		float radius;
+	};
+
+	struct Circle3i
+	{
+		Circle3i();
+		explicit Circle3i(const glm::ivec3& center, float radius);
+		explicit Circle3i(int centerX, int centerY, int centerZ, float radius);
+
+		glm::ivec3 center;
+		float radius;
+	};
+
+	struct Circle3f
+	{
+		Circle3f();
+		explicit Circle3f(const glm::vec3& center, float radius);
+		explicit Circle3f(float centerX, float centerY, float centerZ, float radius);
+
+		glm::vec3 center;
 		float radius;
 	};
 

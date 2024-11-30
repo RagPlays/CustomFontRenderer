@@ -1,8 +1,9 @@
+#ifndef INSTRUMENTOR_H
+#define INSTRUMENTOR_H
 
 // # This code is fully from The Cherno
 
 #if ENGINE_PROFILE
-#include "Engine/Core/Log.h"
 
 #include <algorithm>
 #include <chrono>
@@ -47,10 +48,6 @@ namespace Engine
 				// Subsequent profiling output meant for the original session will end up in the
 				// newly opened session instead.  That's better than having badly formatted
 				// profiling output.
-				if (Log::GetCoreLogger()) // Edge case: BeginSession() might be before Log::Init()
-				{
-					ENGINE_CORE_ERROR("Instrumentor::BeginSession('{0}') when session '{1}' already open.", name, m_CurrentSession->name);
-				}
 				InternalEndSession();
 			}
 			m_OutputStream.open(filepath);
@@ -59,13 +56,6 @@ namespace Engine
 			{
 				m_CurrentSession = new InstrumentationSession({ name });
 				WriteHeader();
-			}
-			else
-			{
-				if (Log::GetCoreLogger()) // Edge case: BeginSession() might be before Log::Init()
-				{
-					ENGINE_CORE_ERROR("Instrumentor could not open results file '{0}'.", filepath);
-				}
 			}
 		}
 
@@ -260,3 +250,5 @@ namespace Engine
 #define ENGINE_PROFILE_SCOPE(name)
 #define ENGINE_PROFILE_FUNCTION()
 #endif
+
+#endif // !INSTRUMENTOR_H

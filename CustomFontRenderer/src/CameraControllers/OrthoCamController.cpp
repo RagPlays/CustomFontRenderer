@@ -4,21 +4,26 @@
 
 using namespace Engine;
 
-OrthoCamController::OrthoCamController(float cameraSpeed, float aspectRatio, float nearDist, float farDist, bool canRotate)
+OrthoCamController::OrthoCamController(float cameraSpeed, float nearDist, float farDist, bool canRotate)
     : m_MovementSpeed{ cameraSpeed }
 	, m_RotationSpeed{ 25.f }
 	, m_LastMousePos{ Input::GetMousePosition() }
 	, m_DragSpeed{}
-	, m_AspectRatio{ aspectRatio }
-    , m_ZoomLevel{ 1.f }
+	, m_AspectRatio{}
+    , m_ZoomLevel{ 10.f }
 	, m_MaxZoom{ 1000.f }
 	, m_MinZoom{ 0.1f }
     , m_CanRotate{ canRotate }
     , m_Camera{ nearDist, farDist }
 {
 	const Window& appWindow{ Application::Get().GetWindow() };
+	const float windowWidth{ static_cast<float>(appWindow.GetWidth()) };
+	const float windowHeight{ static_cast<float>(appWindow.GetHeight()) };
+
+	m_AspectRatio = windowWidth / windowHeight;
+
 	UpdateProjection();
-	UpdateDragSpeed(static_cast<float>(appWindow.GetWidth()), static_cast<float>(appWindow.GetHeight()));
+	UpdateDragSpeed(windowWidth, windowHeight);
 }
 
 void OrthoCamController::Update()
@@ -113,7 +118,7 @@ const OrthographicCamera& OrthoCamController::GetCamera() const
 
 bool OrthoCamController::OnMouseScrolled(MouseScrolledEvent& e)
 {
-	m_ZoomLevel -= e.GetYOffset();
+	m_ZoomLevel -= m_ZoomLevel * e.GetYOffset() / 10.f;
 	m_ZoomLevel = std::clamp(m_ZoomLevel, m_MinZoom, m_MaxZoom);
 
 	UpdateProjection();

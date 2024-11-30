@@ -25,14 +25,19 @@ namespace Engine
 		s_RendererAPI->Clear(clearColor, clearDepth);
 	}
 
-	void RenderCommand::DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t indexCount)
+	void RenderCommand::DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount, RenderMode mode)
 	{
-		s_RendererAPI->DrawIndexed(vertexArray, indexCount);
+		s_RendererAPI->DrawIndexed(vertexArray, indexCount, mode);
 	}
 
-	void RenderCommand::DrawLines(const std::shared_ptr<VertexArray>& vertexArray, uint32_t vertexCount)
+	void RenderCommand::DrawVertices(const Ref<VertexArray>& vertexArray, uint32_t vertexCount, RenderMode mode)
 	{
-		s_RendererAPI->DrawLines(vertexArray, vertexCount);
+		s_RendererAPI->DrawVertices(vertexArray, vertexCount, mode);
+	}
+
+	void RenderCommand::SetPointSize(float size)
+	{
+		s_RendererAPI->SetPointSize(size);
 	}
 
 	void RenderCommand::SetLineWidth(float width)

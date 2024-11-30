@@ -14,9 +14,15 @@ namespace Engine
 		std::string title;
 		uint32_t width;
 		uint32_t height;
+		bool vsync;
+		bool fullScreen;
 
-		WindowProps(const std::string& title = "Engine", uint32_t width = 1600, uint32_t height = 900)
-			: title{ title }, width{ width }, height{ height }
+		explicit WindowProps(const std::string& title = "Engine", uint32_t width = 1600, uint32_t height = 900, bool vsync = true, bool fullScreen = false)
+			: title{ title }
+			, width{ width }
+			, height{ height }
+			, vsync{ vsync }
+			, fullScreen{ fullScreen }
 		{
 		}
 	};

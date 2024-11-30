@@ -29,13 +29,33 @@ namespace Engine
 		ENGINE_CORE_ASSERT(false, "Unknown severity level!");
 	}
 
+	constexpr static GLenum RenderModeToOpenGL(RenderMode mode)
+	{
+		switch (mode)
+		{
+			case RenderMode::Points:			return GL_POINTS;
+			case RenderMode::Lines:				return GL_LINES;
+			case RenderMode::LineLoop:			return GL_LINE_LOOP;
+			case RenderMode::LineStrip:			return GL_LINE_STRIP;
+			case RenderMode::Triangle:			return GL_TRIANGLES;
+			case RenderMode::TriangleStrip:		return GL_TRIANGLE_STRIP;
+			case RenderMode::TriangleFan:		return GL_TRIANGLE_FAN;
+
+			default:
+			{
+				ENGINE_CORE_ASSERT(false, "Unknown render mode!");
+				return GL_NONE;
+			}
+		}
+	}
+
 	void OpenGLRendererAPI::Init()
 	{
 		ENGINE_PROFILE_FUNCTION();
 
 #if defined ENGINE_DEBUG
-		/*if (GLAD_GL_VERSION_4_3) ENGINE_CORE_INFO("OpenGL 4.3 is supported!");
-		else ENGINE_CORE_WARN("OpenGL 4.3 or greater is not supported!");*/
+		if (GLAD_GL_VERSION_4_3) ENGINE_CORE_INFO("OpenGL 4.3 is supported!");
+		else ENGINE_CORE_WARN("OpenGL 4.3 or greater is not supported!");
 
 		glEnable(GL_DEBUG_OUTPUT);
 		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
@@ -70,17 +90,22 @@ namespace Engine
 		glClear(mask);
 	}
 
-	void OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount)
+	void OpenGLRendererAPI::DrawVertices(const Ref<VertexArray>& vertexArray, uint32_t vertexCount, RenderMode mode)
+	{
+		vertexArray->Bind();
+		glDrawArrays(RenderModeToOpenGL(mode), 0, vertexCount); // mode, first, count
+	}
+
+	void OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount, RenderMode mode)
 	{
 		vertexArray->Bind();
 		const uint32_t indicesCount{ indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount() };
-		glDrawElements(GL_TRIANGLES, indicesCount, GL_UNSIGNED_INT, nullptr); // mode, count, type, *indices
+		glDrawElements(RenderModeToOpenGL(mode), indicesCount, GL_UNSIGNED_INT, nullptr); // mode, count, type, *indices
 	}
 
-	void OpenGLRendererAPI::DrawLines(const Ref<VertexArray>& vertexArray, uint32_t vertexCount)
+	void OpenGLRendererAPI::SetPointSize(float size)
 	{
-		vertexArray->Bind();
-		glDrawArrays(GL_LINES, 0, vertexCount); // mode, first, count
+		glPointSize(size);
 	}
 
 	void OpenGLRendererAPI::SetLineWidth(float width)
