@@ -4,6 +4,8 @@
 #include "ImGuiLayer.h"
 
 #include <imgui.h>
+#include <imgui_internal.h>
+
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 
@@ -16,8 +18,6 @@ namespace Engine
 {
 	ImGuiLayer::ImGuiLayer()
 		: Layer{ "ImGuiLayer" }
-		, m_Time{}
-		, m_BlockEvents{ true }
 	{
 	}
 
@@ -32,34 +32,30 @@ namespace Engine
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
-		ImGuiIO& io{ ImGui::GetIO() }; (void)io;
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
-		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
-		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
-		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
-		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
-		// Setup Dear ImGui style
-		ImGui::StyleColorsDark();
-		//ImGui::StyleColorsClassic();
+		ImGuiIO& io{ ImGui::GetIO() };
 
-		// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
-		ImGuiStyle& style = ImGui::GetStyle();
-		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		// ImGui Configs
+		constexpr ImGuiConfigFlags configFlags
 		{
-			style.WindowRounding = 0.0f;
-			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-		}
+			ImGuiConfigFlags_NavEnableKeyboard | // Enable Keyboard Controls
+			//ImGuiConfigFlags_NavEnableGamepad | // Enable Gamepad Controls
+			ImGuiConfigFlags_DockingEnable | // Enable Docking
+			ImGuiConfigFlags_ViewportsEnable // Enable Multi-Viewport / Platform Windows
+		};
+		io.ConfigFlags |= configFlags;
+		io.WantCaptureMouse = false;
+		io.WantCaptureKeyboard = false;
+		io.WantTextInput = false;
+		io.MouseDrawCursor = false;
 
 		SetDarkThemeColors();
-
+		
+		// Setup Platform/Renderer bindings
 		Application& app{ Application::Get() };
 		GLFWwindow* window{ static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow()) };
-
-		// Setup Platform/Renderer bindings
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
-		ImGui_ImplOpenGL3_Init("#version 410");
+		ImGui_ImplOpenGL3_Init("#version 460");
 	}
 
 	void ImGuiLayer::OnDetach()
@@ -78,7 +74,6 @@ namespace Engine
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
-		//ImGuizmo::BeginFrame();
 	}
 
 	void ImGuiLayer::End()
@@ -86,33 +81,38 @@ namespace Engine
 		ENGINE_PROFILE_FUNCTION();
 
 		// Get display size
-		Application& app{ Application::Get() };
-		const ImVec2 displaySize{ static_cast<float>(app.GetWindow().GetWidth()), static_cast<float>(app.GetWindow().GetHeight()) };
+		const Window& window{ Application::Get().GetWindow() };
+		const ImVec2 displaySize
+		{
+			static_cast<float>(window.GetWidth()),
+			static_cast<float>(window.GetHeight())
+		};
 
 		// Set display size
 		ImGuiIO& io{ ImGui::GetIO() };
 		io.DisplaySize = displaySize;
 
-		// Rendering
+		DisableOpenGLDebugOutput();
+
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
-			GLFWwindow* backup_current_context{ glfwGetCurrentContext() };
+			GLFWwindow* backupContext{ glfwGetCurrentContext() };
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
-			glfwMakeContextCurrent(backup_current_context);
+			glfwMakeContextCurrent(backupContext);
 		}
-	}
 
-	void ImGuiLayer::BlockEvents(bool block)
-	{
-		m_BlockEvents = block;
+		EnableOpenGLDebugOutput();
 	}
 
 	void ImGuiLayer::SetDarkThemeColors()
 	{
+		ImGui::StyleColorsDark();
+		//ImGui::StyleColorsClassic();
+
 		auto& colors = ImGui::GetStyle().Colors;
 		colors[ImGuiCol_WindowBg] = ImVec4{ 0.1f, 0.105f, 0.11f, 1.0f };
 
@@ -144,10 +144,26 @@ namespace Engine
 		colors[ImGuiCol_TitleBgCollapsed] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
 	}
 
-	/*uint32_t ImGuiLayer::GetActiveWidgetID() const
+	uint32_t ImGuiLayer::GetActiveWidgetID() const
 	{
-		return 0;
-	}*/
+		return GImGui->ActiveId;
+	}
+
+	void ImGuiLayer::DisableOpenGLDebugOutput()
+	{
+#ifdef ENGINE_DEBUG
+		glDisable(GL_DEBUG_OUTPUT);
+		glDisable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+#endif
+	}
+
+	void ImGuiLayer::EnableOpenGLDebugOutput()
+	{
+#ifdef ENGINE_DEBUG
+		glEnable(GL_DEBUG_OUTPUT);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+#endif
+	}
 }
 
 #endif

@@ -17,7 +17,7 @@ namespace Engine
 		// pixel shader and fragment shader are the same
 		else if (type == "fragment" || type == "pixel") return GL_FRAGMENT_SHADER;
 
-		ENGINE_CORE_ASSERT(false, "Unknown shader type!");
+		ENGINE_CORE_ASSERT_MSG(false, "Unknown shader type!");
 		return 0;
 	}
 
@@ -158,7 +158,7 @@ namespace Engine
 		if (!input.good())
 		{
 			ENGINE_CORE_ERROR("Could not open file '{0}'", filepath);
-			ENGINE_CORE_ASSERT(false, "file not opened");
+			ENGINE_CORE_ASSERT(false);
 			return result;
 		}
 
@@ -167,7 +167,7 @@ namespace Engine
 		if (size == -1)
 		{
 			ENGINE_CORE_ERROR("Could not read from file '{0}'", filepath);
-			ENGINE_CORE_ASSERT(false, "file not read correctly");
+			ENGINE_CORE_ASSERT(false);
 			return result;
 		}
 
@@ -193,17 +193,17 @@ namespace Engine
 		{
 			//End of shader type declaration line
 			const size_t eol{ source.find_first_of("\r\n", currentPos) };
-			ENGINE_CORE_ASSERT(eol != std::string::npos, "Syntax error");
+			ENGINE_CORE_ASSERT_MSG(eol != std::string::npos, "Syntax error");
 
 			//Start of shader type name (after "#type " keyword)
 			const size_t begin{ currentPos + typeTokenLength + 1 };
 			const std::string type{ source.substr(begin, eol - begin) };
 			const unsigned int typeId{ ShaderTypeFromString(type) };
-			ENGINE_CORE_ASSERT(typeId, "Invalid shader type specified");
+			ENGINE_CORE_ASSERT_MSG(typeId, "Invalid shader type specified");
 
 			//Start of shader code after shader type declaration line
 			const size_t nextLinePos{ source.find_first_not_of("\r\n", eol) };
-			ENGINE_CORE_ASSERT(nextLinePos != std::string::npos, "Syntax error");
+			ENGINE_CORE_ASSERT_MSG(nextLinePos != std::string::npos, "Syntax error");
 
 			//Start of next shader type declaration line
 			currentPos = source.find(typeToken, nextLinePos);
@@ -222,7 +222,7 @@ namespace Engine
 		// Create programm
 		unsigned int programId{ glCreateProgram() };
 
-		ENGINE_CORE_ASSERT(shaderSources.size() <= 2, "Engine only supports 2 shaders for now");
+		ENGINE_CORE_ASSERT_MSG(shaderSources.size() <= 2, "Engine only supports 2 shaders for now");
 
 		std::array<unsigned int, 2> glShaderIDs{};
 		int glShaderIDIndex{};
@@ -250,7 +250,7 @@ namespace Engine
 				// Cleanup and error report
 				glDeleteShader(shaderId);
 				ENGINE_CORE_ERROR("{0}", infoLog.data());
-				ENGINE_CORE_ASSERT(false, "Shader compilation failure!");
+				ENGINE_CORE_ASSERT_MSG(false, "Shader compilation failure!");
 				m_RendererID = 0;
 				return;
 			}
@@ -283,7 +283,7 @@ namespace Engine
 			}
 
 			ENGINE_CORE_ERROR("Shader linking failed ({0}):\n{1}", m_FilePath, infoLog.data());
-			ENGINE_CORE_ASSERT(false, "Shader link failure!");
+			ENGINE_CORE_ASSERT(false);
 			m_RendererID = 0;
 			return;
 		}
@@ -311,7 +311,7 @@ namespace Engine
 			ENGINE_CORE_ERROR("Could not find \"{0}\", in shader \"{1}\" with id {2}", name, m_Name, m_RendererID);
 		}
 #endif
-		ENGINE_CORE_ASSERT(location != -1, "Uniform not found!");
+		ENGINE_CORE_ASSERT_MSG(location != -1, "Uniform not found!");
 		m_UniformLocationCache.insert({ name, location });
 		return location;
 	}

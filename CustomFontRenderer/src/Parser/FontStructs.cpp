@@ -1,43 +1,37 @@
 #include "FontStructs.h"
 
-using namespace Engine;
-
-// Glyph Data //
-
-GlyphData::GlyphData()
-	: xMin{ 0 }
-	, xMax{ 0 }
-	, yMin{ 0 }
-	, yMax{ 0 }
-	, contourEndIndices{}
-	, points{}
+// ----------------- GLYPHPOINT -------------------- //
+GlyphPoint::GlyphPoint(int x, int y)
+    : x{ x }
+    , y{ y }
+    , onCurve{ false }
 {
 }
 
-GlyphData::GlyphData(int16_t xMin, int16_t xMax, int16_t yMin, int16_t yMax, const std::vector<uint16_t>& contourEndIndices, const std::vector<glm::ivec2>& points)
-	: xMin{ xMin }
-	, xMax{ xMax }
-	, yMin{ yMin }
-	, yMax{ yMax }
-	, contourEndIndices{ contourEndIndices }
-	, points{ points }
+GlyphPoint::GlyphPoint(int x, int y, bool onCurve)
+    : x{ x }
+    , y{ y }
+    , onCurve{ onCurve }
 {
 }
 
-// Table Data //
-
-TableData::TableData()
-	: tag{}
-	, checkSum{}
-	, offset{}
-	, length{}
+GlyphPoint::operator glm::ivec2() const
 {
+    return glm::ivec2{ x, y };
 }
 
-TableData::TableData(const std::string& tag, const uint32_t& checkSum, const uint32_t& offset, const uint32_t& length)
-	: tag{ tag }
-	, checkSum{ checkSum }
-	, offset{ offset }
-	, length{ length }
+// ----------------- GLYPHDATA -------------------- //
+uint16_t GlyphData::GetWidth() const
 {
+    return xMax - xMin;
 }
+
+uint16_t GlyphData::GetHeight() const
+{
+    return yMax - yMin;
+}
+
+//// ------------ FONT DATA	 --------------- //
+//FontData::FontData()
+//{
+//}

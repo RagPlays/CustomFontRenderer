@@ -7,11 +7,11 @@
 
 #include "CameraControllers/OrthoCamController.h"
 
-class TestLayer2D : public Engine::Layer
+class SandboxTestLayer2D : public Engine::Layer
 {
 public:
 
-	TestLayer2D();
+	SandboxTestLayer2D();
 
 	virtual void OnAttach() override;
 	virtual void OnDetach() override;

@@ -1,7 +1,6 @@
 #include "FontRendererApp.h"
 
 #include "Layers/MainLayer.h"
-#include "Layers/TestLayer2D.h"
 
 Engine::Application* Engine::CreateApplication(const ApplicationCommandLineArgs& args)
 {
@@ -9,10 +8,12 @@ Engine::Application* Engine::CreateApplication(const ApplicationCommandLineArgs&
 }
 
 FontRendererApp::FontRendererApp()
+	: Application{ Engine::WindowProps{ "Custom Font Renderer", 1920, 1080, true, false} }
 {
-	/*MainLayer* mainLayer{ new MainLayer{} };
-	AddLayer(mainLayer);*/
-	
-	TestLayer2D* testLayer2D{ new TestLayer2D{} };
-	AddLayer(testLayer2D);
+	MainLayer* mainLayer{ new MainLayer{} };
+	AddLayer(mainLayer);
+}
+
+FontRendererApp::~FontRendererApp()
+{
 }

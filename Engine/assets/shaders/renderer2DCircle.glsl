@@ -56,7 +56,6 @@ void main()
 	if (circle == 0.0) discard;
 
 	// Set output color
-    o_Color = v_Input.color;
-	o_Color.a *= circle;
+    o_Color = v_Input.color * circle;
 }
 // ===========================================================================

@@ -5,7 +5,7 @@
 #include <string>
 #include <cstdint>
 
-#include "ByteReader.h"
+#include "Files/ByteReader.h"
 
 class FontReader final
 {
@@ -19,18 +19,37 @@ public:
 	FontReader& operator=(const FontReader& other) = delete;
 	FontReader& operator=(FontReader&& other) noexcept = delete;
 
-	std::string ReadTag();
+	void Open();
+	void Close();
 
+	std::string ReadTag();
+	void ReadTag(std::string& tag);
+	void ReadTag(char* data);
+	
 	double ReadFixedPoint2Dot14();
 	static double UInt16ToFixedPoint2Dot14(uint16_t raw);
 
-	uint8_t ReadUint8();
+	uint8_t ReadUInt8();
+	void ReadUInt8(uint8_t* data);
 	uint16_t ReadUInt16();
+	void ReadUInt16(uint16_t* data);
 	uint32_t ReadUInt32();
+	void ReadUInt32(uint32_t* data);
+	uint64_t ReadUInt64();
+	void ReadUInt64(uint64_t* data);
+
 	int8_t ReadInt8();
+	void ReadInt8(int8_t* data);
 	int16_t ReadInt16();
+	void ReadInt16(int16_t* data);
 	int32_t ReadInt32();
-	std::vector<uint8_t> ReadBytes(size_t nrOfBytes);
+	void ReadInt32(int32_t* data);
+	int64_t ReadInt64();
+	void ReadInt64(int64_t* data);
+
+	std::vector<uint8_t> ReadBytes(size_t size);
+	void ReadBytes(uint8_t* data, size_t size);
+	void ReadBuffer(void* data, size_t size);
 
 	void SkipBytes(size_t nrOfBytes);
 	void SetPosition(size_t position);

@@ -16,6 +16,16 @@ namespace Engine
 	Application* Application::s_Instance{ nullptr };
 
 	Application::Application()
+		: Application{ WindowProps{} }
+	{
+	}
+
+	Application::Application(const std::string& name)
+		: Application{ WindowProps{ name } }
+	{
+	}
+
+	Application::Application(const WindowProps& windowProperties)
 		: m_Window{ nullptr }
 		, m_Running{ true }
 		, m_Minimized{ false }
@@ -30,18 +40,18 @@ namespace Engine
 		s_Instance = this;
 
 		// Create Window
-		m_Window = Window::Create(WindowProps{ "Engine", 1920, 1080, true, false });
+		m_Window = Window::Create(windowProperties);
 
 		// Set WindowEventCallBack
 		m_Window->SetEventCallback(ENGINE_BIND_EVENT_FN(Application::OnEvent));
 
 		// Init Timer and Renderer
 		Renderer::Init();
-		
+
 #if ENGINE_IMGUI
 		// Set Imgui start layer
 		m_ImguiLayer = new ImGuiLayer{};
-		AddOverlay(m_ImguiLayer); 
+		AddOverlay(m_ImguiLayer);
 #endif
 	}
 

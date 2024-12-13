@@ -1,4 +1,4 @@
-#include "MainLayer.h"
+#include "SandboxMainLayer.h"
 
 #include <array>
 
@@ -7,8 +7,8 @@
 
 using namespace Engine;
 
-MainLayer::MainLayer()
-	: Layer{ "MainLayer" }
+SandboxMainLayer::SandboxMainLayer()
+	: Layer{ "SandboxMainLayer" }
 	, m_CameraController{ 5.f, -1.f, 1.f, true }
 	, m_SquareColor{ 0.2f, 0.2f, 0.8f, 1.f }
 	, m_TriangleRotationZ{}
@@ -80,13 +80,13 @@ MainLayer::MainLayer()
 	m_TransparentTexture = Texture2D::Create("assets/textures/transparentTexture.png");
 }
 
-void MainLayer::OnUpdate()
+void SandboxMainLayer::OnUpdate()
 {
 	Update();
 	Render();
 }
 
-void MainLayer::OnImGuiRender()
+void SandboxMainLayer::OnImGuiRender()
 {
 	ImGui::Begin("Settings");
 	ImGui::ColorEdit3("Square Color", glm::value_ptr(m_SquareColor));
@@ -94,12 +94,12 @@ void MainLayer::OnImGuiRender()
 	ImGui::End();
 }
 
-void MainLayer::OnEvent(Event& e)
+void SandboxMainLayer::OnEvent(Event& e)
 {
 	m_CameraController.OnEvent(e);
 }
 
-void MainLayer::Update()
+void SandboxMainLayer::Update()
 {
 	m_CameraController.Update();
 
@@ -110,7 +110,7 @@ void MainLayer::Update()
 	m_FlatColorShader->SetFloat4("u_Color", m_SquareColor);
 }
 
-void MainLayer::Render() const
+void SandboxMainLayer::Render() const
 {
 	const FrameTimer& timer{ FrameTimer::Get() };
 	const float deltaTime{ timer.GetSeconds() };

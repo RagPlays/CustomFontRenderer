@@ -110,22 +110,16 @@ namespace Engine
         {
             ENGINE_PROFILE_SCOPE("WindowsWindow::Init-glfwCreateWindow");
 
-            GLFWmonitor* monitor{};
+            GLFWmonitor* monitor{ glfwGetPrimaryMonitor() };
+            ENGINE_CORE_ASSERT(monitor, "Failed to get primary monitor!");
 
-            if (props.fullScreen)
+            const GLFWvidmode* videoMode{ glfwGetVideoMode(monitor) };
+            ENGINE_CORE_ASSERT(videoMode, "Failed to get video mode!");
+
+            if (props.fullScreen && monitor && videoMode)
             {
-                // Get the primary monitor and its video mode
-                monitor = glfwGetPrimaryMonitor();
-                ENGINE_CORE_ASSERT(monitor, "Failed to get primary monitor for fullscreen mode!");
-
-                const GLFWvidmode* videoMode{ glfwGetVideoMode(monitor) };
-                ENGINE_CORE_ASSERT(videoMode, "Failed to get video mode for fullscreen mode!");
-
-                if (monitor && videoMode)
-                {
-                    m_Data.width = videoMode->width;
-                    m_Data.height = videoMode->height;
-                }
+                m_Data.width = videoMode->width;
+                m_Data.height = videoMode->height;
             }
 
             m_Window = glfwCreateWindow
@@ -133,9 +127,13 @@ namespace Engine
                 props.width,
                 props.height,
                 m_Data.title.c_str(),
-                monitor,
+                props.fullScreen ? monitor : nullptr,
                 nullptr
             );
+            if (!props.fullScreen)
+            {
+                glfwSetWindowPos(m_Window, videoMode->width / 2 - props.width / 2, videoMode->height / 2 - props.height / 2);
+            }
         }
         ++s_GLFWWindowCount;
 

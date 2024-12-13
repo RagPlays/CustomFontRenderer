@@ -31,7 +31,7 @@ namespace Engine
 
 		const char* operator[](int index) const
 		{
-			ENGINE_CORE_ASSERT(index < count, "Index not in args");
+			ENGINE_CORE_ASSERT_MSG(index < count, "Index not in args");
 			return args[index];
 		}
 	};
@@ -41,6 +41,8 @@ namespace Engine
 	public:
 
 		Application();
+		explicit Application(const std::string& name);
+		explicit Application(const WindowProps& windowProperties);
 		virtual ~Application();
 
 		void Run();

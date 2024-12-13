@@ -4,13 +4,15 @@
 #include <Engine.h>
 #include <Engine/Core/EntryPoint.h>
 
-class FontRendererApp : public Engine::Application
+class FontRendererApp final : public Engine::Application
 {
 public:
 
 	FontRendererApp();
-	~FontRendererApp() = default;
-};
+	~FontRendererApp();
 
+private:
+
+};
 
 #endif // !FONTRENDERERAPP_H

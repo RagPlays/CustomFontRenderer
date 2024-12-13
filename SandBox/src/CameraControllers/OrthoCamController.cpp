@@ -1,16 +1,18 @@
 #include "OrthoCamController.h"
 
+#include <Engine.h>
+
 using namespace Engine;
 
-OrthoCamController::OrthoCamController(float cameraSpeed, float nearDist, float farDist, float minZoom, float maxZoom, bool canRotate)
+OrthoCamController::OrthoCamController(float cameraSpeed, float nearDist, float farDist, bool canRotate)
     : m_MovementSpeed{ cameraSpeed }
 	, m_RotationSpeed{ 25.f }
 	, m_LastMousePos{ Input::GetMousePosition() }
 	, m_DragSpeed{}
 	, m_AspectRatio{}
-	, m_ZoomLevel{ (maxZoom - minZoom) * 0.5f }
-	, m_MaxZoom{ maxZoom }
-	, m_MinZoom{ minZoom }
+    , m_ZoomLevel{ 10.f }
+	, m_MaxZoom{ 1000.f }
+	, m_MinZoom{ 0.1f }
     , m_CanRotate{ canRotate }
     , m_Camera{ nearDist, farDist }
 {
@@ -55,7 +57,7 @@ void OrthoCamController::Update()
 
 	if (Input::IsMouseButtonPressed(Mouse::ButtonMiddle))
 	{
-		m_ZoomLevel = (m_MaxZoom - m_MinZoom) * 0.5f;
+		m_ZoomLevel = 1.f;
 		UpdateProjection();
 	}
 

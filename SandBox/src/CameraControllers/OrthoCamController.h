@@ -1,7 +1,7 @@
 #ifndef ORTHOGRAPHICCAMERACONTROLLER_H
 #define ORTHOGRAPHICCAMERACONTROLLER_H
 
-#include <Engine.h>
+#include "Engine/Renderer/OrthographicCamera.h"
 
 namespace Engine
 {
@@ -14,7 +14,7 @@ class OrthoCamController final
 {
 public:
 
-	explicit OrthoCamController(float cameraSpeed, float nearDist, float farDist, float minZoom, float maxZoom, bool canRotate);
+	explicit OrthoCamController(float cameraSpeed, float nearDist, float farDist, bool canRotate);
 	~OrthoCamController() = default;
 
 	void Update();

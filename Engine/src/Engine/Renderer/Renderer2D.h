@@ -1,6 +1,7 @@
 #ifndef RENDERER2D_H
 #define RENDERER2D_H
 
+#include <vector>
 #include <cstdint>
 #include <memory>
 
@@ -10,6 +11,9 @@ namespace Engine
 {
 	class Camera;
 	class Texture2D;
+
+	struct Line2f;
+	struct Line3f;
 
 	struct Rect2f;
 	struct Rect3f;
@@ -29,7 +33,8 @@ namespace Engine
 		Renderer2D& operator=(const Renderer2D& other) = delete;
 		Renderer2D& operator=(Renderer2D&& other) noexcept = delete;
 		
-		// Basics //
+		// Basics ------------------------------------------------------
+
 		static void Init();
 		static void Shutdown();
 
@@ -46,18 +51,37 @@ namespace Engine
 		static float GetPointSize();
 		static void SetPointSize(float size);
 
-		// Drawing //
+		// Drawing ------------------------------------------------------
+		
 		// Points
 		static void DrawPoint(const glm::vec2& position);
 		static void DrawPoint(const glm::vec3& position);
 
+		static void DrawPoints(const std::vector<glm::ivec2>& points);
+		static void DrawPoints(const std::vector<glm::ivec3>& points);
+		static void DrawPoints(const std::vector<glm::vec2>& points);
+		static void DrawPoints(const std::vector<glm::vec3>& points);
+
 		// Lines
+		static void DrawLine(const Line2f& line);
+		static void DrawLine(const Line3f& line);
 		static void DrawLine(const glm::vec2& p0, const glm::vec2& p1);
 		static void DrawLine(const glm::vec3& p0, const glm::vec3& p1);
 
 		// Rect
+		static void DrawRect(const Rect2f& rect);
+		static void DrawRect(const Rect3f& rect);
+		static void DrawRect(const glm::vec2& position, const glm::vec2& size);
+		static void DrawRect(const glm::vec3& position, const glm::vec2& size);
 
-		// Rect Filled
+		static void DrawRect(const Rect2f& rect, float radAngle);
+		static void DrawRect(const Rect3f& rect, float radAngle);
+		static void DrawRect(const glm::vec2& position, const glm::vec2& size, float radAngle);
+		static void DrawRect(const glm::vec3& position, const glm::vec2& size, float radAngle);
+
+		static void DrawRect(const glm::mat4& modelMatrix);
+
+		// Filled Rect
 		static void DrawFilledRect(const Rect2f& rect);
 		static void DrawFilledRect(const Rect3f& rect);
 		static void DrawFilledRect(const glm::vec2& position, const glm::vec2& size);
@@ -78,7 +102,7 @@ namespace Engine
 
 		static void DrawCircle(const glm::mat4& modelMatrix, float thickness = 0.1f, float fade = 0.005f);
 
-		// Circle Filled
+		// Filled Circle
 		static void DrawFilledCircle(const Circle2f& circle, float fade = 0.005f);
 		static void DrawFilledCircle(const Circle3f& circle, float fade = 0.005f);
 		static void DrawFilledCircle(const glm::vec2& center, float radius, float fade = 0.005f);
@@ -87,6 +111,8 @@ namespace Engine
 		static void DrawFilledCircle(const glm::mat4& modelMatrix, float fade = 0.005f);
 
 		// Polygons
+
+		// Filled Polygons
 
 		// Texture
 		static void DrawTexture(const Ref<Texture2D>&, const Rect2f& rect, const glm::vec4& tintColor = Color::white, float tilingFactor = 1.f);

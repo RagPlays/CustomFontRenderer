@@ -13,8 +13,6 @@
 #include "Engine/Renderer/Texture.h"
 #include "Engine/Renderer/Shader.h"
 
-#include <iostream>
-
 namespace Engine
 {
 	struct PointVertex
@@ -239,10 +237,10 @@ namespace Engine
 		s_Data.whiteTexture->Bind(0);
 
 		// -------------- SHADERS ----------------//
-		s_Data.pointShader = Shader::Create("assets/shaders/renderer2DPoint.glsl");
-		s_Data.lineShader = Shader::Create("assets/shaders/renderer2DLine.glsl");
-		s_Data.quadShader = Shader::Create("assets/shaders/renderer2DQuad.glsl");
-		s_Data.circleShader = Shader::Create("assets/shaders/renderer2DCircle.glsl");
+		s_Data.pointShader = Shader::Create("../Engine/assets/shaders/renderer2DPoint.glsl");
+		s_Data.lineShader = Shader::Create("../Engine/assets/shaders/renderer2DLine.glsl");
+		s_Data.quadShader = Shader::Create("../Engine/assets/shaders/renderer2DQuad.glsl");
+		s_Data.circleShader = Shader::Create("../Engine/assets/shaders/renderer2DCircle.glsl");
 	}
 
 	void Renderer2D::Shutdown()
@@ -300,6 +298,7 @@ namespace Engine
 	}
 
 	// Points
+
 	void Renderer2D::DrawPoint(const glm::vec2& position)
 	{
 		DrawPoint(glm::vec3{ position, 0.f });
@@ -320,7 +319,93 @@ namespace Engine
 #endif
 	}
 
+	void Renderer2D::DrawPoints(const std::vector<glm::ivec2>& points)
+	{
+		const uint32_t pointCount{ static_cast<uint32_t>(points.size()) };
+		if (s_Data.pointVertexCount + pointCount > Renderer2DData::maxPointVertices) NextPointBatch();
+
+		for (const glm::ivec2& point : points)
+		{
+			s_Data.pointVertexBufferPtr->position = glm::vec3{ static_cast<glm::vec2>(point), 0.f };
+			s_Data.pointVertexBufferPtr->color = s_Data.drawColor;
+			s_Data.pointVertexBufferPtr++;
+		}
+
+		s_Data.pointVertexCount += pointCount;
+
+#if RENDERER2D_STATISTICS
+		s_Data.stats.pointCount += pointCount;
+#endif
+	}
+
+	void Renderer2D::DrawPoints(const std::vector<glm::ivec3>& points)
+	{
+		const uint32_t pointCount{ static_cast<uint32_t>(points.size()) };
+		if (s_Data.pointVertexCount + pointCount > Renderer2DData::maxPointVertices) NextPointBatch();
+
+		for (const glm::ivec3& point : points)
+		{
+			s_Data.pointVertexBufferPtr->position = static_cast<glm::vec3>(point);
+			s_Data.pointVertexBufferPtr->color = s_Data.drawColor;
+			s_Data.pointVertexBufferPtr++;
+		}
+
+		s_Data.pointVertexCount += pointCount;
+
+#if RENDERER2D_STATISTICS
+		s_Data.stats.pointCount += pointCount;
+#endif
+	}
+
+	void Renderer2D::DrawPoints(const std::vector<glm::vec2>& points)
+	{
+		const uint32_t pointCount{ static_cast<uint32_t>(points.size()) };
+		if (s_Data.pointVertexCount + pointCount > Renderer2DData::maxPointVertices) NextPointBatch();
+
+		for (const glm::vec2& point : points)
+		{
+			s_Data.pointVertexBufferPtr->position = glm::vec3{ point, 0.f };
+			s_Data.pointVertexBufferPtr->color = s_Data.drawColor;
+			s_Data.pointVertexBufferPtr++;
+		}
+
+		s_Data.pointVertexCount += pointCount;
+
+#if RENDERER2D_STATISTICS
+		s_Data.stats.pointCount += pointCount;
+#endif
+	}
+
+	void Renderer2D::DrawPoints(const std::vector<glm::vec3>& points)
+	{
+		const uint32_t pointCount{ static_cast<uint32_t>(points.size()) };
+		if (s_Data.pointVertexCount + pointCount > Renderer2DData::maxPointVertices) NextPointBatch();
+
+		for (const glm::vec3& point : points)
+		{
+			s_Data.pointVertexBufferPtr->position = point;
+			s_Data.pointVertexBufferPtr->color = s_Data.drawColor;
+			s_Data.pointVertexBufferPtr++;
+		}
+
+		s_Data.pointVertexCount += pointCount;
+
+#if RENDERER2D_STATISTICS
+		s_Data.stats.pointCount += pointCount;
+#endif
+	}
+
 	// Lines
+	void Renderer2D::DrawLine(const Line2f& line)
+	{
+		DrawLine(line.pointOne, line.pointTwo);
+	}
+
+	void Renderer2D::DrawLine(const Line3f& line)
+	{
+		DrawLine(line.pointOne, line.pointTwo);
+	}
+	
 	void Renderer2D::DrawLine(const glm::vec2& p0, const glm::vec2& p1)
 	{
 		DrawLine(glm::vec3{ p0, 0.f }, glm::vec3{ p1, 0.f });
@@ -346,6 +431,76 @@ namespace Engine
 	}
 
 	// Rect
+	void Renderer2D::DrawRect(const Rect2f& rect)
+	{
+		DrawRect(rect.position, rect.size);
+	}
+
+	void Renderer2D::DrawRect(const Rect3f& rect)
+	{
+		DrawRect(rect.position, rect.size);
+	}
+
+	void Renderer2D::DrawRect(const glm::vec2& position, const glm::vec2& size)
+	{
+		DrawRect(glm::vec3{ position.x, position.y, 0.f }, size);
+	}
+
+	void Renderer2D::DrawRect(const glm::vec3& position, const glm::vec2& size)
+	{
+		ENGINE_PROFILE_FUNCTION();
+
+		glm::mat4 modelMatrix{ Renderer2DData::identityMatrix };
+		modelMatrix = glm::translate(modelMatrix, position);
+		modelMatrix = glm::scale(modelMatrix, glm::vec3{ size, 1.f });
+
+		DrawRect(modelMatrix);
+	}
+
+	void Renderer2D::DrawRect(const Rect2f& rect, float radAngle)
+	{
+		DrawRect(rect.position, rect.size, radAngle);
+	}
+
+	void Renderer2D::DrawRect(const Rect3f& rect, float radAngle)
+	{
+		DrawRect(rect.position, rect.size, radAngle);
+	}
+
+	void Renderer2D::DrawRect(const glm::vec2& position, const glm::vec2& size, float radAngle)
+	{
+		DrawRect(glm::vec3{ position, 0.f }, size, radAngle);
+	}
+
+	void Renderer2D::DrawRect(const glm::vec3& position, const glm::vec2& size, float radAngle)
+	{
+		ENGINE_PROFILE_FUNCTION();
+
+		glm::mat4 modelMatrix{ Renderer2DData::identityMatrix };
+		modelMatrix = glm::translate(modelMatrix, position);
+		modelMatrix = glm::rotate(modelMatrix, radAngle, Renderer2DData::zAxis);
+		modelMatrix = glm::scale(modelMatrix, glm::vec3{ size, 1.f });
+
+		DrawRect(modelMatrix);
+	}
+
+	void Renderer2D::DrawRect(const glm::mat4& modelMatrix)
+	{
+		ENGINE_PROFILE_FUNCTION();
+
+		glm::vec3 lineVertices[4]{};
+		for (size_t positionIdx{}; positionIdx < 4; positionIdx++)
+		{
+			lineVertices[positionIdx] = modelMatrix * s_Data.quadVertexPositions[positionIdx];
+		}
+
+		DrawLine(lineVertices[0], lineVertices[1]);
+		DrawLine(lineVertices[1], lineVertices[2]);
+		DrawLine(lineVertices[2], lineVertices[3]);
+		DrawLine(lineVertices[3], lineVertices[0]);
+	}
+
+	// Filled Rect
 	void Renderer2D::DrawFilledRect(const Rect2f& rect)
 	{
 		DrawFilledRect(rect.position, rect.size);
@@ -405,8 +560,8 @@ namespace Engine
 
 		constexpr size_t quadVertexCount{ 4 };
 		constexpr int whitePixelTextureIdx{ 0 };
-		constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
-		constexpr float defaultTilingFactor = 1.0f;
+		constexpr glm::vec2 textureCoords[]{ { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+		constexpr float defaultTilingFactor{ 1.f };
 
 		if (s_Data.quadIndexCount >= Renderer2DData::maxQuadIndices) NextQuadBatch();
 
@@ -426,6 +581,7 @@ namespace Engine
 #endif
 	}
 
+	// Circle
 	void Renderer2D::DrawCircle(const Circle2f& circle, float thickness, float fade)
 	{
 		DrawCircle(circle.center, circle.radius, thickness, fade);
@@ -469,6 +625,7 @@ namespace Engine
 #endif
 	}
 
+	// Filled Circle
 	void Renderer2D::DrawFilledCircle(const Circle2f& circle, float fade)
 	{
 		DrawCircle(circle, 1.f, fade);
@@ -573,14 +730,15 @@ namespace Engine
 		ENGINE_PROFILE_FUNCTION();
 
 		constexpr size_t quadVertexCount{ 4 };
-		constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+		constexpr glm::vec2 textureCoords[]{ { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
 
 		uint32_t textureIdx{};
-		for (uint32_t i{}; i < s_Data.textureSlotIndex; i++)
+		for (uint32_t idx{}; idx < s_Data.textureSlotIndex; idx++)
 		{
-			if (*s_Data.textureSlots[i] == *texture)
+			if (*s_Data.textureSlots[idx] == *texture)
 			{
-				textureIdx = i; break;
+				textureIdx = idx;
+				break;
 			}
 		}
 
@@ -614,6 +772,7 @@ namespace Engine
 #endif
 	}
 
+	// Stats
 	void Renderer2D::ResetStats()
 	{
 #if RENDERER2D_STATISTICS
@@ -630,6 +789,7 @@ namespace Engine
 #endif
 	}
 
+	// Camera Shaders
 	void Renderer2D::SetShadersViewProjection(const glm::mat4& viewProj)
 	{
 		s_Data.pointShader->Bind();
@@ -645,6 +805,7 @@ namespace Engine
 		s_Data.circleShader->SetMat4("u_ViewProjectionMatrix", viewProj);
 	}
 
+	// Next Batches
 	void Renderer2D::NextPointBatch()
 	{
 		FlushPoints();
@@ -670,6 +831,7 @@ namespace Engine
 		ResetCircleBatch();
 	}
 
+	// Reset Batches
 	void Renderer2D::ResetAllBatches()
 	{
 		ResetPointBatch();
@@ -707,7 +869,8 @@ namespace Engine
 	{
 		s_Data.textureSlotIndex = 1;
 	}
-
+	
+	// Flush Batches
 	void Renderer2D::FlushAll()
 	{
 		FlushPoints();

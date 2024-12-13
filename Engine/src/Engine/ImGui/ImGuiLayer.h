@@ -24,14 +24,14 @@ namespace Engine
 		void Begin();
 		void End();
 
-		void BlockEvents(bool block);
-
 		void SetDarkThemeColors();
+
+		uint32_t GetActiveWidgetID() const;
 
 	private:
 
-		float m_Time;
-		bool m_BlockEvents;
+		void DisableOpenGLDebugOutput();
+		void EnableOpenGLDebugOutput();
 
 	};
 }

@@ -25,10 +25,14 @@
 //	#endif
 
 
-#define ENGINE_ASSERT(x, ...) if (!(x)) { ENGINE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); }
-#define ENGINE_CORE_ASSERT(x, ...) if(!(x)) { ENGINE_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); }
+#define ENGINE_ASSERT_MSG(x, ...) if (!(x)) { ENGINE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); }
+#define ENGINE_ASSERT(x) if (!(x)) { ENGINE_ERROR("Assertion Failed"); __debugbreak(); }
+#define ENGINE_CORE_ASSERT_MSG(x, ...) if(!(x)) { ENGINE_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); }
+#define ENGINE_CORE_ASSERT(x) if(!(x)) { ENGINE_CORE_ERROR("Assertion Failed"); __debugbreak(); }
 #else
-#define ENGINE_ASSERT(x, ...)
+#define ENGINE_ASSERT_MSG(x, ...)
+#define ENGINE_ASSERT(x)
+#define ENGINE_CORE_ASSERT_MSG(x, ...)
 #define ENGINE_CORE_ASSERT(x, ...)
 #endif
 

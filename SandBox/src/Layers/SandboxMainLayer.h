@@ -1,16 +1,16 @@
-#ifndef MAINLAYER_H
-#define MAINLAYER_H
+#ifndef SANDBOXMAINLAYER_H
+#define SANDBOXMAINLAYER_H
 
 #include <Engine.h>
 
 #include "CameraControllers/OrthoCamController.h"
 
-class MainLayer final : public Engine::Layer
+class SandboxMainLayer final : public Engine::Layer
 {
 public:
 
-	MainLayer();
-	virtual ~MainLayer() = default;
+	SandboxMainLayer();
+	virtual ~SandboxMainLayer() = default;
 
 	virtual void OnUpdate() override;
 
@@ -42,4 +42,4 @@ private:
 
 };
 
-#endif // !MAINLAYER_H
+#endif // !SANDBOXMAINLAYER_H
