@@ -5,7 +5,7 @@
 #include <string>
 #include <cstdint>
 
-#include "Files/ByteReader.h"
+#include "Parser/FileManipulation/ByteReader.h"
 
 class FontReader final
 {
@@ -21,6 +21,8 @@ public:
 
 	void Open();
 	void Close();
+
+	const std::string& GetFontPath() const;
 
 	std::string ReadTag();
 	void ReadTag(std::string& tag);

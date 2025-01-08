@@ -1,71 +1,133 @@
 #include "FontRenderer.h"
 
 #include "Parser/Font.h"
+#include "Parser/FontHelpers/FontData.h"
+#include "Parser/FontHelpers/GlyphHelpers.h"
 
 using namespace Engine;
 
-std::vector<glm::vec4> FontRenderer::s_ContourLineColors
+const std::vector<glm::vec4> FontRenderer::s_ContourLineColors
 {
 	{ 1.f, 0.16f, 0.16f, 1.f },
 	{ 0.16f, 1.f, 0.16f, 1.f },
 	{ 0.16f, 0.16f, 1.f, 1.f }
 };
 
+FontRenderer::FontRenderer()
+	: m_Font{ nullptr }
+	, m_RenderConfigs{}
+	, m_TextGlyphs{}
+{
+}
+
+FontRenderer::FontRenderer(const FontRenderConfigs& configs)
+	: m_Font{ nullptr }
+	, m_RenderConfigs{}
+	, m_TextGlyphs{}
+{
+	UpdateRenderData(m_RenderConfigs, true, true);
+}
+
 FontRenderer::FontRenderer(std::shared_ptr<Font> font)
 	: m_Font{ font }
 	, m_RenderConfigs{}
+	, m_TextGlyphs{}
 {
+	UpdateRenderData(m_RenderConfigs, true, false);
 }
 
 FontRenderer::~FontRenderer()
 {
 }
 
-void FontRenderer::SetRenderConfigs(const FontRenderConfigs& configs)
+void FontRenderer::SetRenderConfigs(const FontRenderConfigs& newConfigs)
 {
-	m_RenderConfigs = configs;
+	if (m_RenderConfigs != newConfigs)
+	{
+		UpdateRenderData(newConfigs);
+		m_RenderConfigs = newConfigs;
+	}
+}
+
+void FontRenderer::UpdateRenderData(const FontRenderConfigs& newConfigs, bool forceTextReload, bool forceFontReload)
+{
+	const bool fontChanged{ m_RenderConfigs.fontPath != newConfigs.fontPath };
+	const bool textChanged{ m_RenderConfigs.inputText != newConfigs.inputText };
+
+	if (fontChanged || forceFontReload)
+	{
+		m_Font = std::make_shared<Font>(newConfigs.fontPath);
+	}
+
+	if (fontChanged || textChanged || forceTextReload)
+	{
+		m_TextGlyphs.clear();
+		m_TextGlyphs.reserve(newConfigs.inputText.size());
+
+		for (const char& textChar : newConfigs.inputText)
+		{
+			if (textChar == ' ' || textChar == '\n' || textChar == '\t') continue;
+			m_TextGlyphs.emplace_back(m_Font->GetGlyphFromChar(textChar));
+		}
+	}
 }
 
 void FontRenderer::Render() const
 {
-	constexpr int wordSpacing{ 400 };
 	constexpr int letterSpacing{ 700 };
+	constexpr int wordSpacing{ 400 };
 
 	glm::ivec2 offset{};
-	for (const char& textChar : m_RenderConfigs.inputText)
+	size_t glyphIdx{};
+
+	for (const char charater : m_RenderConfigs.inputText)
 	{
-		if (textChar == ' ')
+		if (charater == ' ')
 		{
 			offset.x += wordSpacing;
-			continue;
 		}
-
-		const GlyphData& charGlyph{ m_Font->GetGlyphFromChar(textChar) };
-		RenderGlyph(charGlyph, offset);
-
-		offset.x += letterSpacing;
+		else if (charater == '\n')
+		{
+			offset.x = 0;
+			offset.y -= letterSpacing * 2;
+		}
+		else if (charater == '\t')
+		{
+			ENGINE_ASSERT_MSG(false, "Tab not implemented yet!");
+		}
+		else
+		{
+			DebugRenderGlyph(m_TextGlyphs[glyphIdx], offset);
+			offset.x += letterSpacing;
+			++glyphIdx;
+		}
 	}
 }
 
-void FontRenderer::RenderGlyph(const GlyphData& glyph, const glm::ivec2& offset) const
+void FontRenderer::DebugRenderGlyph(const GlyphData& glyph, const glm::ivec2& offset) const
 {
-	const std::vector<uint16_t>& contourEndIndices{ glyph.contourEndIndices };
-	const std::vector<GlyphPoint>& points{ glyph.points };
-	const int glyphWidth{ glyph.xMax - glyph.xMin };
-	const int glyphHeight{ glyph.yMax - glyph.yMin };
-	const Engine::Rect2i glyphbox{ glm::ivec2{ glyph.xMin + glyphWidth / 2, glyph.yMin + glyphHeight / 2 } + offset, { glyphWidth, glyphHeight } };
-
 	// Glyphbox
 	if (m_RenderConfigs.drawDebugBoundBox)
 	{
+		const GlyphBounds glyphBounds{ GetGlyphBounds(glyph) };
+		const Rect3f glyphbox{ glm::vec3{ glyphBounds.center + static_cast<glm::vec2>(offset), -2.f }, glyphBounds.size };
 		Renderer2D::SetDrawColor(Color::white);
-		Renderer2D::DrawRect(static_cast<Rect2f>(glyphbox));
+		Renderer2D::DrawRect(glyphbox);
 	}
-	
+
+	m_RenderConfigs.useBezierCurves ? DebugRenderBezierGlyph(glyph, offset) : DebugRenderContourGlyph(glyph, offset);
+}
+
+void FontRenderer::DebugRenderContourGlyph(const GlyphData& glyph, const glm::ivec2& offset) const
+{
+	Renderer2D::SetLineWidth(1.f);
+
+	const std::vector<uint16_t>& contourEndIndices{ glyph.contourEndIndices };
+	const std::vector<GlyphPoint>& points{ glyph.points };
+
 	// Lines
 	if (m_RenderConfigs.drawDebugLines)
 	{
-		Renderer2D::SetLineWidth(1.f);
 		int contourStartIdx{};
 		for (size_t contourEndIdx{}; contourEndIdx < contourEndIndices.size(); ++contourEndIdx)
 		{
@@ -73,17 +135,17 @@ void FontRenderer::RenderGlyph(const GlyphData& glyph, const glm::ivec2& offset)
 
 			const uint16_t& currentEndIdx{ contourEndIndices[contourEndIdx] };
 
-			const size_t numPontsInContour{ static_cast<size_t>(currentEndIdx - contourStartIdx + 1) };
+			const size_t numPointsInContour{ static_cast<size_t>(currentEndIdx - contourStartIdx + 1) };
 			const std::vector<GlyphPoint> contourPoints
 			{
 				points.begin() + contourStartIdx,
-				points.begin() + contourStartIdx + numPontsInContour
+				points.begin() + contourStartIdx + numPointsInContour
 			};
 
-			for (size_t pointIdx{}; pointIdx < numPontsInContour; ++pointIdx)
+			for (size_t pointIdx{}; pointIdx < numPointsInContour; ++pointIdx)
 			{
-				const glm::ivec2& pointOne{ static_cast<glm::ivec2>(contourPoints[pointIdx]) + offset };
-				const glm::ivec2& pointTwo{ static_cast<glm::ivec2>(contourPoints[(pointIdx + 1) % numPontsInContour]) + offset };
+				const glm::ivec2 pointOne{ static_cast<glm::ivec2>(contourPoints[pointIdx]) + offset };
+				const glm::ivec2 pointTwo{ static_cast<glm::ivec2>(contourPoints[(pointIdx + 1) % numPointsInContour]) + offset };
 				Renderer2D::DrawLine(static_cast<glm::vec2>(pointOne), static_cast<glm::vec2>(pointTwo));
 			}
 
@@ -94,12 +156,67 @@ void FontRenderer::RenderGlyph(const GlyphData& glyph, const glm::ivec2& offset)
 	// Points
 	if (m_RenderConfigs.drawDebugPoints)
 	{
-		Renderer2D::SetPointSize(2.f);
-		Renderer2D::SetDrawColor(Color::white);
+		Renderer2D::SetPointSize(5.f);
 		for (const GlyphPoint& point : points)
 		{
-			const glm::ivec2 drawPos{ glm::ivec2{ point.x, point.y } + offset };
-			Renderer2D::DrawPoint(drawPos);
+			Renderer2D::SetDrawColor(point.onCurve ? Color::blue : Color::white);
+			const glm::ivec3 drawPos{ glm::ivec3{ point.x, point.y, 1 } + glm::ivec3{ offset, 0.f } };
+			Renderer2D::DrawFilledCircle(static_cast<glm::vec3>(drawPos), 6.f);
+		}
+	}
+}
+
+void FontRenderer::DebugRenderBezierGlyph(const GlyphData& glyph, const glm::ivec2& offset) const
+{
+	Renderer2D::SetLineWidth(1.f);
+
+	const float scale{ 1.f / m_Font->GetUnitsPerEm() };
+	const std::vector<std::vector<GlyphPoint>> contours{ CreateContoursWithImpliedPoints(glyph) };
+
+	// Lines
+	if (m_RenderConfigs.drawDebugLines)
+	{
+		for (size_t contourIdx{}; contourIdx < contours.size(); ++contourIdx)
+		{
+			Renderer2D::SetDrawColor(s_ContourLineColors[contourIdx % s_ContourLineColors.size()]);
+
+			const std::vector<GlyphPoint>& contour{ contours[contourIdx] };
+			for (size_t pointIdx{}; pointIdx < contour.size(); ++pointIdx)
+			{
+				const GlyphPoint& pointOne{ contour[pointIdx] };
+				const GlyphPoint& pointTwo{ contour[(pointIdx + 1) % contour.size()] };
+				const GlyphPoint& pointThree{ contour[(pointIdx + 2) % contour.size()] };
+
+				const glm::ivec2 p1{ glm::ivec2(pointOne) + offset };
+				const glm::ivec2 p2{ glm::ivec2(pointTwo) + offset };
+				const glm::ivec2 p3{ glm::ivec2(pointThree) + offset };
+
+				if (pointOne.onCurve)
+				{
+					if (pointTwo.onCurve) Renderer2D::DrawLine(p1, p2);
+					else
+					{
+						++pointIdx;
+						RenderUtils2D::DrawBezier(p1, p2, p3, m_RenderConfigs.bezierCurveResolution);
+					}
+				}
+			}
+		}
+	}
+
+	// Points
+	if (m_RenderConfigs.drawDebugPoints)
+	{
+		Renderer2D::SetPointSize(5.f);
+
+		for (const std::vector<GlyphPoint>& contour : contours)
+		{
+			for (const GlyphPoint& point : contour)
+			{
+				Renderer2D::SetDrawColor(point.onCurve ? Color::blue : Color::white);
+				const glm::ivec3 drawPos{ glm::ivec3{ point.x, point.y, 1 } + glm::ivec3{ offset, 0.f } };
+				Renderer2D::DrawFilledCircle(static_cast<glm::vec3>(drawPos), 6.f);
+			}
 		}
 	}
 }

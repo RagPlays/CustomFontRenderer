@@ -10,15 +10,15 @@ using namespace Engine;
 
 MainLayer::MainLayer()
 	: Layer{ "MainLayer" }
-	, m_CameraController{ 2.f, -100.f, 100.f, 1000.f, 100000.f, true }
+	, m_CameraController{ 2.f, -100.f, 100.f, 1.f, 100000.f, true }
 	, m_InputPossible{ true }
 	, m_CurrentFontRenderConfigs{}
 {
 	m_CameraController.SetZoom(5000.f);
 
 	// Create Font
-	m_Font = std::make_unique<Font>("assets/Fonts/JetBrainsMono-Bold.ttf");
-	//m_Font = std::make_unique<Font>("assets/Fonts/ArialRoundedMTBold.ttf");
+	m_Font = std::make_shared<Font>("assets/Fonts/JetBrainsMono-Bold.ttf");
+	//m_Font = std::make_shared<Font>("assets/Fonts/ArialRoundedMTBold.ttf");
 
 	// Create Font Renderer
 	m_FontRenderer = std::make_unique<FontRenderer>(m_Font);
@@ -26,6 +26,11 @@ MainLayer::MainLayer()
 
 MainLayer::~MainLayer()
 {
+}
+
+void MainLayer::OnAttach()
+{
+	m_InputPossible = true;
 }
 
 void MainLayer::OnUpdate()
@@ -36,10 +41,19 @@ void MainLayer::OnUpdate()
 
 void MainLayer::OnImGuiRender()
 {
+	static bool showImGui{ true };
+
+	if (Input::IsKeyPressed(Key::F2))
+	{
+		showImGui = !showImGui;
+	}
+
+	if (!showImGui) return;
+
 	bool hoveringImGui{ false };
 
 	static float imGuiFontScale{ 2.f };
-	ImGui::Begin("ImGuiConfigs");
+	ImGui::Begin("ImGuiConfigs", nullptr, ImGuiWindowFlags_NoMove);
 	{
 		if (hoveringImGui || ImGui::IsWindowHovered()) hoveringImGui = true;
 		ImGui::SetWindowFontScale(imGuiFontScale);
@@ -53,7 +67,7 @@ void MainLayer::OnImGuiRender()
 	const glm::vec3& rotation{ camera.GetRotation() };
 	const float cameraZoom{ m_CameraController.GetZoom() };
 
-	ImGui::Begin("CameraInfo");
+	ImGui::Begin("CameraInfo", nullptr, ImGuiWindowFlags_NoMove);
 	{
 		if (hoveringImGui || ImGui::IsWindowHovered()) hoveringImGui = true;
 		ImGui::SetWindowFontScale(imGuiFontScale);
@@ -79,7 +93,7 @@ void MainLayer::OnImGuiRender()
 		nrOfFrames = 0;
 	}
 
-	ImGui::Begin("RendererStats");
+	ImGui::Begin("RendererStats", nullptr, ImGuiWindowFlags_NoMove);
 	{
 		if (hoveringImGui || ImGui::IsWindowHovered()) hoveringImGui = true;
 		ImGui::SetWindowFontScale(imGuiFontScale);
@@ -98,7 +112,7 @@ void MainLayer::OnImGuiRender()
 	}
 	ImGui::End();
 
-	ImGui::Begin("FontRendererConfig");
+	ImGui::Begin("FontRendererConfig", nullptr, ImGuiWindowFlags_NoMove);
 	{
 		if (hoveringImGui || ImGui::IsWindowHovered()) hoveringImGui = true;
 		ImGui::SetWindowFontScale(imGuiFontScale);
@@ -118,6 +132,20 @@ void MainLayer::OnImGuiRender()
 		ImGui::Text("Draw Bounding Box");
 		ImGui::Checkbox("##drawDedugBoundingBox", &m_CurrentFontRenderConfigs.drawDebugBoundBox);
 
+		ImGui::Text("Use Bezier Curves");
+		ImGui::Checkbox("##useBezierCurves", &m_CurrentFontRenderConfigs.useBezierCurves);
+
+		if (m_CurrentFontRenderConfigs.useBezierCurves)
+		{
+			int tempBezierResolution{ static_cast<int>(m_CurrentFontRenderConfigs.bezierCurveResolution) };
+			if (tempBezierResolution < 0) tempBezierResolution = 0;
+			if (ImGui::InputInt("##bezierCurveResolution", &tempBezierResolution))
+			{
+				if (tempBezierResolution < 0) m_CurrentFontRenderConfigs.bezierCurveResolution = 0;
+				else m_CurrentFontRenderConfigs.bezierCurveResolution = static_cast<uint32_t>(tempBezierResolution);
+			}
+		}
+
 		ImGui::Text("----------------------");
 		if (ImGui::Button("Apply", ImVec2{ configWindowRes.x, 0.f }))
 		{
@@ -133,18 +161,12 @@ void MainLayer::OnImGuiRender()
 
 void MainLayer::OnEvent(Engine::Event& e)
 {
-	if (m_InputPossible)
-	{
-		m_CameraController.OnEvent(e);
-	}
+	if (m_InputPossible) m_CameraController.OnEvent(e);
 }
 
 void MainLayer::Update()
 {
-	if (m_InputPossible)
-	{
-		m_CameraController.Update();
-	}
+	if (m_InputPossible) m_CameraController.Update();
 }
 
 void MainLayer::Render() const
@@ -152,6 +174,19 @@ void MainLayer::Render() const
 	Renderer2D::ResetStats();
 	RenderCommand::SetClearColor({ 0.15f, 0.15f, 0.15f, 1.f });
 	RenderCommand::Clear();
+
+	/*constexpr int spaceBetweenCharacters{ 500 };
+	Renderer2D::BeginScene(m_CameraController.GetCamera());
+	{
+		glm::ivec2 offset{};
+		const std::vector<GlyphData>& glyphsData{ m_Font->GetGlyphs() };
+		for (const auto& glyph : glyphsData)
+		{
+			m_FontRenderer->DebugRenderGlyph(glyph, offset);
+			offset.x += glyph.GetWidth();
+		}
+	}
+	Renderer2D::EndScene();*/
 
 	Renderer2D::BeginScene(m_CameraController.GetCamera());
 	{

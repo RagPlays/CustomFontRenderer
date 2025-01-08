@@ -30,8 +30,3 @@ uint16_t GlyphData::GetHeight() const
 {
     return yMax - yMin;
 }
-
-//// ------------ FONT DATA	 --------------- //
-//FontData::FontData()
-//{
-//}

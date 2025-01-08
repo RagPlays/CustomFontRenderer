@@ -608,6 +608,8 @@ namespace Engine
 
 	void Renderer2D::DrawCircle(const glm::mat4& modelMatrix, float thickness, float fade)
 	{
+		if (s_Data.circleIndexCount >= Renderer2DData::maxCircleVertices) NextCircleBatch();
+
 		for (size_t vertexIdx{}; vertexIdx < 4; vertexIdx++)
 		{
 			s_Data.circleVertexBufferPtr->worldPosition = modelMatrix * s_Data.quadVertexPositions[vertexIdx];
@@ -746,8 +748,8 @@ namespace Engine
 		{
 			if (s_Data.textureSlotIndex >= Renderer2DData::maxTextureSlots) NextQuadBatch();
 
-			ENGINE_CORE_ASSERT(s_Data.textureSlotIndex < Renderer2DData::maxTextureSlots, "textureIdx to high");
-			ENGINE_CORE_ASSERT(s_Data.textureSlotIndex >= 0, "textureIdx to low");
+			ENGINE_CORE_ASSERT_MSG(s_Data.textureSlotIndex < Renderer2DData::maxTextureSlots, "textureIdx to high");
+			ENGINE_CORE_ASSERT_MSG(s_Data.textureSlotIndex >= 0, "textureIdx to low");
 
 			textureIdx = s_Data.textureSlotIndex;
 			s_Data.textureSlots[s_Data.textureSlotIndex] = texture;

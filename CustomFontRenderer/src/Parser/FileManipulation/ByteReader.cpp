@@ -43,6 +43,11 @@ void ByteReader::Close()
     }
 }
 
+const std::string& ByteReader::GetFilePath() const
+{
+    return m_FilePath;
+}
+
 uint8_t ByteReader::ReadUInt8()
 {
     uint8_t byte{};

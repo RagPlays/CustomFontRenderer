@@ -17,6 +17,8 @@ public:
 	MainLayer();
 	~MainLayer();
 
+	virtual void OnAttach() override;
+
 	virtual void OnUpdate() override;
 	virtual void OnImGuiRender() override;
 

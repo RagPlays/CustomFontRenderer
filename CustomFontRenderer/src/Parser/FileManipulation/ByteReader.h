@@ -22,6 +22,8 @@ public:
 	void Open();
 	void Close();
 
+	const std::string& GetFilePath() const;
+
 	uint8_t ReadUInt8();
 	void ReadUInt8(uint8_t* data);
 	uint16_t ReadUInt16();

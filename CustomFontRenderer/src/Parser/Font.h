@@ -5,9 +5,9 @@
 #include <memory>
 #include <string>
 
-#include "FontReader.h"
-
-#include "FontStructs.h"
+#include "FileManipulation/FontReader.h"
+#include "FontHelpers/FontStructs.h"
+#include "FontHelpers/FontData.h"
 
 class Font final
 {
@@ -22,6 +22,8 @@ public:
 	Font& operator=(Font&& other) noexcept = delete;
 
 	const GlyphData& GetGlyphFromChar(char character) const;
+	const std::string& GetFontPath() const;
+	const uint16_t GetUnitsPerEm() const;
 
 private:
 
@@ -40,11 +42,9 @@ private:
 	GlyphData ReadGlyph(uint32_t glyphIdx);
 	GlyphData ReadSimpleGlyph(uint32_t glyphIdx);
 	GlyphData ReadCompoundGlyph(uint32_t glyphIdx);
-	std::pair<GlyphData, bool> ReadNextComponentGlyph(uint32_t glyphIdx);
 
-	void ParseCoordinates(std::vector<int>& coordinates, const std::vector<uint8_t>& allFlags, bool readingX);
-
-	void ReadUniCodeToIndex();
+	std::pair<GlyphData, bool> ReadNextComponentGlyph();
+	void ReadGlyphPoints(std::vector<GlyphPoint>& points, const std::vector<uint8_t>& allFlags);
 
 	// Printing
 	void FontLog(const std::string& message);
@@ -59,19 +59,17 @@ private:
 	FontReader m_FontReader;
 	
 	std::vector<GlyphData> m_GlyphsData;
-	std::unordered_map<uint16_t, uint32_t> m_UnicodeToGlyphIdx;
+	std::unordered_map<uint32_t, uint32_t> m_UnicodeToGlyphIdx;
 
 	// Header
 	FontHeader m_FontHeader;
+
 	// Tables
 	std::unordered_map<std::string, FontTableEntry> m_TableEntries;
 	HeadTable m_FontHeadTable;
 	MaxpTable m_FontMaxpTable;
 	// Cmap
 	LocaTable m_FontLocaTable;
-
-	std::unordered_map<int8_t, GlyphData*> m_GlyphDataLookup;
-	
 };
 
 #endif // !FONT_H

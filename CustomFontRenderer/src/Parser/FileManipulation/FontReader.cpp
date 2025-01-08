@@ -19,6 +19,11 @@ void FontReader::Close()
 	m_ByteReader.Close();
 }
 
+const std::string& FontReader::GetFontPath() const
+{
+	return m_ByteReader.GetFilePath();
+}
+
 std::string FontReader::ReadTag()
 {
 	const std::vector<uint8_t> bytes{ ReadBytes(4) };

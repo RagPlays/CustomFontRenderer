@@ -9,7 +9,6 @@
 #include <glm/glm.hpp>
 
 // ------------ TABLES DATA	 --------------- //
-
 struct FontHeader
 {
 	uint32_t version;
@@ -81,19 +80,7 @@ struct FontTableEntry
 	uint32_t length;
 };
 
-
 // ------------ GLYPH DATA	 --------------- //
-struct Glyph
-{
-	int16_t xMin;
-	int16_t xMax;
-	int16_t yMin;
-	int16_t yMax;
-
-	std::vector<uint16_t> contourEndIndices;
-	std::vector<glm::ivec2> points;
-};
-
 struct GlyphPoint
 {
 	int x;
@@ -125,19 +112,22 @@ struct GlyphData
 	uint16_t GetHeight() const;
 };
 
-// ------------ FONT DATA	 --------------- //
-//struct FontData final
+struct GlyphMap
+{
+	uint32_t glyphIdx;
+	uint32_t unicode;
+};
+
+struct GlyphBounds
+{
+	glm::vec2 center{};
+	glm::vec2 size{};
+};
+
+// ------------ TEXT DATA	 --------------- //
+//struct TextData
 //{
-//public:
 //
-//	explicit FontData();
-//
-//	uint32_t unitsPerEm;
-//
-//
-//private:
-//
-//	std::unordered_map<uint32_t, GlyphData*> glyphLookup;
 //};
 
 #endif // !FONTSTRUCTS_H
