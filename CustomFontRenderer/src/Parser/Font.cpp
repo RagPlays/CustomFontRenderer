@@ -40,6 +40,11 @@ Font::Font(const std::string& filePath)
 	m_FontReader.Close();
 }
 
+const std::vector<GlyphData>& Font::GetGlyphs() const
+{
+	return m_GlyphsData;
+}
+
 const GlyphData& Font::GetGlyphFromChar(char character) const
 {
 	ENGINE_ASSERT_MSG(!m_GlyphsData.empty(), "m_GlyphData must contain at least one glyph.");
@@ -326,6 +331,8 @@ void Font::ReadCmapTable()
 			}
 		}
 	}
+
+	FontLog("");
 }
 
 void Font::ReadLocaTable()

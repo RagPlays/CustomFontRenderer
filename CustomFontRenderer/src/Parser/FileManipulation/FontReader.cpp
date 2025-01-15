@@ -65,35 +65,35 @@ uint8_t FontReader::ReadUInt8()
 
 uint16_t FontReader::ReadUInt16()
 {
-	return m_ByteReader.SwapEndianness(m_ByteReader.ReadUInt16());
+	return ByteReader::SwapEndianness(m_ByteReader.ReadUInt16());
 }
 
 void FontReader::ReadUInt16(uint16_t* data)
 {
 	m_ByteReader.ReadUInt16(data);
-	m_ByteReader.SwapEndianness(data);
+	ByteReader::SwapEndianness(data);
 }
 
 uint32_t FontReader::ReadUInt32()
 {
-	return m_ByteReader.SwapEndianness(m_ByteReader.ReadUInt32());
+	return ByteReader::SwapEndianness(m_ByteReader.ReadUInt32());
 }
 
 void FontReader::ReadUInt32(uint32_t* data)
 {
 	m_ByteReader.ReadUInt32(data);
-	m_ByteReader.SwapEndianness(data);
+	ByteReader::SwapEndianness(data);
 }
 
 uint64_t FontReader::ReadUInt64()
 {
-	return m_ByteReader.SwapEndianness(m_ByteReader.ReadUInt64());
+	return ByteReader::SwapEndianness(m_ByteReader.ReadUInt64());
 }
 
 void FontReader::ReadUInt64(uint64_t* data)
 {
 	m_ByteReader.ReadUInt64(data);
-	m_ByteReader.SwapEndianness(data);
+	ByteReader::SwapEndianness(data);
 }
 
 int8_t FontReader::ReadInt8()
@@ -108,35 +108,35 @@ void FontReader::ReadInt8(int8_t* data)
 
 int16_t FontReader::ReadInt16()
 {
-	return m_ByteReader.SwapEndianness(m_ByteReader.ReadInt16());
+	return ByteReader::SwapEndianness(m_ByteReader.ReadInt16());
 }
 
 void FontReader::ReadInt16(int16_t* data)
 {
 	m_ByteReader.ReadInt16(data);
-	m_ByteReader.SwapEndianness(data);
+	ByteReader::SwapEndianness(data);
 }
 
 int32_t FontReader::ReadInt32()
 {
-	return m_ByteReader.SwapEndianness(m_ByteReader.ReadInt32());
+	return ByteReader::SwapEndianness(m_ByteReader.ReadInt32());
 }
 
 void FontReader::ReadInt32(int32_t* data)
 {
 	m_ByteReader.ReadInt32(data);
-	m_ByteReader.SwapEndianness(data);
+	ByteReader::SwapEndianness(data);
 }
 
 int64_t FontReader::ReadInt64()
 {
-	return m_ByteReader.SwapEndianness(m_ByteReader.ReadInt64());
+	return ByteReader::SwapEndianness(m_ByteReader.ReadInt64());
 }
 
 void FontReader::ReadInt64(int64_t* data)
 {
 	m_ByteReader.ReadInt64(data);
-	m_ByteReader.SwapEndianness(data);
+	ByteReader::SwapEndianness(data);
 }
 
 std::vector<uint8_t> FontReader::ReadBytes(size_t nrOfBytes)

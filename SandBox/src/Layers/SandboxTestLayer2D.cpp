@@ -24,9 +24,9 @@ void SandboxTestLayer2D::OnAttach()
 
 	m_CheckerBoardTexture = Texture2D::Create("assets/textures/checkerboard.png", texParams);
 	m_TestTexOne = Texture2D::Create("assets/textures/testTexture1.png", texParams);
-	m_TestTexTwo = Texture2D::Create("assets/textures/testTexture1.png", texParams);
-	m_TestTexThree = Texture2D::Create("assets/textures/testTexture2.png", texParams);
-	m_TestTexFour = Texture2D::Create("assets/textures/testTexture3.png", texParams);
+	m_TestTexTwo = Texture2D::Create("assets/textures/testTexture2.png", texParams);
+	m_TestTexThree = Texture2D::Create("assets/textures/testTexture3.png", texParams);
+	m_TestTexFour = Texture2D::Create("assets/textures/testTexture4.png", texParams);
 }
 
 void SandboxTestLayer2D::OnDetach()
@@ -226,6 +226,7 @@ void SandboxTestLayer2D::Render() const
 			// Textures
 			Renderer2D::DrawTexture(m_CheckerBoardTexture, { 0.f, 0.f, -0.1f }, { 20.f, 20.f }, Color::white, 10.f);
 			Renderer2D::DrawTexture(m_CheckerBoardTexture, { -2.f, 0.f, 0.f }, { 1.f, 1.f }, glm::radians(rotation), Color::white, 20.f);
+			Renderer2D::DrawTexture(m_TestTexTwo, { 0.f, 5.f, 5.f }, { 2.5f, 2.5f });
 
 			// Lines
 			Renderer2D::SetLineWidth(7.f);

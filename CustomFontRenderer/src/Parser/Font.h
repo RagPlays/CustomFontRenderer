@@ -21,6 +21,7 @@ public:
 	Font& operator=(const Font& other) = delete;
 	Font& operator=(Font&& other) noexcept = delete;
 
+	const std::vector<GlyphData>& GetGlyphs() const;
 	const GlyphData& GetGlyphFromChar(char character) const;
 	const std::string& GetFontPath() const;
 	const uint16_t GetUnitsPerEm() const;

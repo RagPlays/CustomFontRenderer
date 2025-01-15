@@ -97,8 +97,8 @@ namespace Engine
 
 		// -------------- MAX VALUES ----------------//
 		static constexpr uint32_t maxPointVertices{ 1000 };
-		static constexpr uint32_t maxLineVertices{ 1000 * 2 };
-		static constexpr uint32_t maxCircleVertices{ 2000 };
+		static constexpr uint32_t maxLineVertices{ 70000 * 2 };
+		static constexpr uint32_t maxCircleVertices{ 33000 * 6 };
 		static constexpr uint32_t maxQuads{ 5000 };
 		static constexpr uint32_t maxQuadVertices{ maxQuads * 4 };
 		static constexpr uint32_t maxQuadIndices{ maxQuads * 6 };

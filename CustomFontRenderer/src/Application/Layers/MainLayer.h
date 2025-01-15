@@ -26,6 +26,8 @@ public:
 
 private:
 
+	bool OnButtonReleased(Engine::KeyReleasedEvent& e);
+
 	void Update();
 	void Render() const;
 
@@ -33,6 +35,7 @@ private:
 
 	OrthoCamController m_CameraController;
 	bool m_InputPossible;
+	bool m_DisplayImGui;
 
 	FontRenderConfigs m_CurrentFontRenderConfigs;
 	std::shared_ptr<Font> m_Font;

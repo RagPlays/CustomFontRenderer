@@ -12,6 +12,7 @@ MainLayer::MainLayer()
 	: Layer{ "MainLayer" }
 	, m_CameraController{ 2.f, -100.f, 100.f, 1.f, 100000.f, true }
 	, m_InputPossible{ true }
+	, m_DisplayImGui{ true }
 	, m_CurrentFontRenderConfigs{}
 {
 	m_CameraController.SetZoom(5000.f);
@@ -41,14 +42,7 @@ void MainLayer::OnUpdate()
 
 void MainLayer::OnImGuiRender()
 {
-	static bool showImGui{ true };
-
-	if (Input::IsKeyPressed(Key::F2))
-	{
-		showImGui = !showImGui;
-	}
-
-	if (!showImGui) return;
+	if (!m_DisplayImGui) return;
 
 	bool hoveringImGui{ false };
 
@@ -155,13 +149,27 @@ void MainLayer::OnImGuiRender()
 	ImGui::End();
 
 	ImGuiIO& io{ ImGui::GetIO() };
-	bool anyInteraction{ io.WantCaptureKeyboard || io.WantTextInput || io.MouseDrawCursor };
+	const bool anyInteraction{ io.WantCaptureKeyboard || io.WantTextInput || io.MouseDrawCursor };
 	m_InputPossible = !anyInteraction && !hoveringImGui;
 }
 
 void MainLayer::OnEvent(Engine::Event& e)
 {
+	EventDispatcher dispatcher{ e };
+	dispatcher.Dispatch<KeyReleasedEvent>(ENGINE_BIND_EVENT_FN(MainLayer::OnButtonReleased));
+
 	if (m_InputPossible) m_CameraController.OnEvent(e);
+}
+
+bool MainLayer::OnButtonReleased(KeyReleasedEvent& e)
+{
+	if (e.GetKeyCode() == Key::F2)
+	{
+		m_DisplayImGui = !m_DisplayImGui;
+		if (!m_DisplayImGui) m_InputPossible = true;
+	}
+
+	return false;
 }
 
 void MainLayer::Update()
@@ -190,7 +198,13 @@ void MainLayer::Render() const
 
 	Renderer2D::BeginScene(m_CameraController.GetCamera());
 	{
-		m_FontRenderer->Render();
+		m_FontRenderer->DebugRenderGlyph(m_Font->GetGlyphs()[0], {});
 	}
 	Renderer2D::EndScene();
+
+	/*Renderer2D::BeginScene(m_CameraController.GetCamera());
+	{
+		m_FontRenderer->Render();
+	}
+	Renderer2D::EndScene();*/
 }

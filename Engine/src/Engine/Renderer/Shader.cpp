@@ -14,11 +14,11 @@ namespace Engine
 	{
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::API::None:    ENGINE_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
+		case RendererAPI::API::None:    ENGINE_CORE_ASSERT_MSG(false, "RendererAPI::None is currently not supported!"); return nullptr;
 		case RendererAPI::API::OpenGL:  return std::make_shared<OpenGLShader>(filepath);
 		}
 
-		ENGINE_CORE_ASSERT(false, "Unknown RendererAPI!");
+		ENGINE_CORE_ASSERT_MSG(false, "Unknown RendererAPI!");
 		return nullptr;
 	}
 
@@ -26,11 +26,11 @@ namespace Engine
 	{
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::API::None:    ENGINE_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
+		case RendererAPI::API::None:    ENGINE_CORE_ASSERT_MSG(false, "RendererAPI::None is currently not supported!"); return nullptr;
 		case RendererAPI::API::OpenGL:  return std::make_shared<OpenGLShader>(name, vertexSrc, fragmentSrc);
 		}
 
-		ENGINE_CORE_ASSERT(false, "Unknown RendererAPI!");
+		ENGINE_CORE_ASSERT_MSG(false, "Unknown RendererAPI!");
 		return nullptr;
 	}
 
@@ -40,7 +40,7 @@ namespace Engine
 
 	void ShaderLibrary::Add(const std::string& name, const std::shared_ptr<Shader>& shader)
 	{
-		ENGINE_CORE_ASSERT(!Exists(name), "Shader already exists!");
+		ENGINE_CORE_ASSERT_MSG(!Exists(name), "Shader already exists!");
 		m_Shaders[name] = shader;
 	}
 
@@ -66,7 +66,7 @@ namespace Engine
 
 	std::shared_ptr<Shader> ShaderLibrary::Get(const std::string& name)
 	{
-		ENGINE_CORE_ASSERT(Exists(name), "Shader not found!");
+		ENGINE_CORE_ASSERT_MSG(Exists(name), "Shader not found!");
 		return m_Shaders[name];
 	}
 

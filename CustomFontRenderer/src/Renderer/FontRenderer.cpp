@@ -120,7 +120,7 @@ void FontRenderer::DebugRenderGlyph(const GlyphData& glyph, const glm::ivec2& of
 
 void FontRenderer::DebugRenderContourGlyph(const GlyphData& glyph, const glm::ivec2& offset) const
 {
-	Renderer2D::SetLineWidth(1.f);
+	Renderer2D::SetLineWidth(1.5f);
 
 	const std::vector<uint16_t>& contourEndIndices{ glyph.contourEndIndices };
 	const std::vector<GlyphPoint>& points{ glyph.points };
@@ -156,19 +156,19 @@ void FontRenderer::DebugRenderContourGlyph(const GlyphData& glyph, const glm::iv
 	// Points
 	if (m_RenderConfigs.drawDebugPoints)
 	{
-		Renderer2D::SetPointSize(5.f);
+		constexpr float pointSize{ 10.f };
 		for (const GlyphPoint& point : points)
 		{
 			Renderer2D::SetDrawColor(point.onCurve ? Color::blue : Color::white);
 			const glm::ivec3 drawPos{ glm::ivec3{ point.x, point.y, 1 } + glm::ivec3{ offset, 0.f } };
-			Renderer2D::DrawFilledCircle(static_cast<glm::vec3>(drawPos), 6.f);
+			Renderer2D::DrawFilledCircle(static_cast<glm::vec3>(drawPos), pointSize);
 		}
 	}
 }
 
 void FontRenderer::DebugRenderBezierGlyph(const GlyphData& glyph, const glm::ivec2& offset) const
 {
-	Renderer2D::SetLineWidth(1.f);
+	Renderer2D::SetLineWidth(1.5f);
 
 	const float scale{ 1.f / m_Font->GetUnitsPerEm() };
 	const std::vector<std::vector<GlyphPoint>> contours{ CreateContoursWithImpliedPoints(glyph) };
@@ -207,15 +207,14 @@ void FontRenderer::DebugRenderBezierGlyph(const GlyphData& glyph, const glm::ive
 	// Points
 	if (m_RenderConfigs.drawDebugPoints)
 	{
-		Renderer2D::SetPointSize(5.f);
-
+		constexpr float pointSize{ 10.f };
 		for (const std::vector<GlyphPoint>& contour : contours)
 		{
 			for (const GlyphPoint& point : contour)
 			{
 				Renderer2D::SetDrawColor(point.onCurve ? Color::blue : Color::white);
 				const glm::ivec3 drawPos{ glm::ivec3{ point.x, point.y, 1 } + glm::ivec3{ offset, 0.f } };
-				Renderer2D::DrawFilledCircle(static_cast<glm::vec3>(drawPos), 6.f);
+				Renderer2D::DrawFilledCircle(static_cast<glm::vec3>(drawPos), pointSize);
 			}
 		}
 	}
