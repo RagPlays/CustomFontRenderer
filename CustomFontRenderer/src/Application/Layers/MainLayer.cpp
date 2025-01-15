@@ -183,6 +183,7 @@ void MainLayer::Render() const
 	RenderCommand::SetClearColor({ 0.15f, 0.15f, 0.15f, 1.f });
 	RenderCommand::Clear();
 
+	// Draw all font characters
 	/*constexpr int spaceBetweenCharacters{ 500 };
 	Renderer2D::BeginScene(m_CameraController.GetCamera());
 	{
@@ -196,15 +197,17 @@ void MainLayer::Render() const
 	}
 	Renderer2D::EndScene();*/
 
-	Renderer2D::BeginScene(m_CameraController.GetCamera());
+	// Only draw "Missing Glyph"
+	/*Renderer2D::BeginScene(m_CameraController.GetCamera());
 	{
 		m_FontRenderer->DebugRenderGlyph(m_Font->GetGlyphs()[0], {});
 	}
-	Renderer2D::EndScene();
+	Renderer2D::EndScene();*/
 
-	/*Renderer2D::BeginScene(m_CameraController.GetCamera());
+	// Draw ImGui input Text
+	Renderer2D::BeginScene(m_CameraController.GetCamera());
 	{
 		m_FontRenderer->Render();
 	}
-	Renderer2D::EndScene();*/
+	Renderer2D::EndScene();
 }
