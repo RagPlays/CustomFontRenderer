@@ -6,6 +6,16 @@ Custom Font Renderer is a project designed to explore the low-level intricacies 
 ## Why I Made It
 I created this custom font renderer to dive into the detailed workings of font rendering. As a programmer passionate about low-level programming, I wanted to challenge myself by learning how to parse font files and render them manually. This project serves as an educational tool and a foundation for building more complex rendering systems.
 
+## Showcase
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/61d09e19-c0e2-421d-bf19-30d97d55888f" alt="Final" width="80%" />
+  <br><br>
+  <img src="https://github.com/user-attachments/assets/20930c27-6ed6-4623-87f2-87e002357bd8" alt="OutlineBezierProgress" width="80%"/>
+  <br><br>
+  <img src="https://github.com/user-attachments/assets/013aec82-bf9d-44b9-ac9f-58c3466cf4eb" alt="OnOffCurve" width="25%"/>
+</p>
+
 ## How to Use
 
 ### Prerequisites
