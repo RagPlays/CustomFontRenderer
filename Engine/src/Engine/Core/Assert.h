@@ -33,7 +33,7 @@
 #define ENGINE_ASSERT_MSG(x, ...)
 #define ENGINE_ASSERT(x)
 #define ENGINE_CORE_ASSERT_MSG(x, ...)
-#define ENGINE_CORE_ASSERT(x, ...)
+#define ENGINE_CORE_ASSERT(x)
 #endif
 
 #endif // !ASSERT_H

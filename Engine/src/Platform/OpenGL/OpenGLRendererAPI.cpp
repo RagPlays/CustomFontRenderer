@@ -26,7 +26,7 @@ namespace Engine
 		case GL_DEBUG_SEVERITY_NOTIFICATION: ENGINE_CORE_TRACE(message); return;
 		}
 
-		ENGINE_CORE_ASSERT(false, "Unknown severity level!");
+		ENGINE_CORE_ASSERT_MSG(false, "Unknown severity level!");
 	}
 
 	constexpr static GLenum RenderModeToOpenGL(RenderMode mode)
@@ -43,7 +43,7 @@ namespace Engine
 
 			default:
 			{
-				ENGINE_CORE_ASSERT(false, "Unknown render mode!");
+				ENGINE_CORE_ASSERT_MSG(false, "Unknown render mode!");
 				return GL_NONE;
 			}
 		}

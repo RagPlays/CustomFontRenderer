@@ -36,7 +36,7 @@ namespace Engine
 		ENGINE_PROFILE_FUNCTION();
 
 		// Set Application Instance
-		ENGINE_CORE_ASSERT(!s_Instance, "Application can not be set twice");
+		ENGINE_CORE_ASSERT_MSG(!s_Instance, "Application can not be set twice");
 		s_Instance = this;
 
 		// Create Window

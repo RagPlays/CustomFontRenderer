@@ -1,6 +1,8 @@
 workspace "CustomFontRenderer"
 	architecture "x64"
 	startproject "CustomFontRenderer"
+	language "C++"
+	cppdialect "C++20"
 
 	configurations{
 		"Debug",
@@ -33,8 +35,6 @@ project "Engine"
 	location "Engine"
 	kind "StaticLib"
 	staticruntime "on"
-	language "C++"
-	cppdialect "C++17"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -95,8 +95,6 @@ project "SandBox"
 	location "SandBox"
 	kind "ConsoleApp"
 	staticruntime "on"
-	language "C++"
-	cppdialect "C++17"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -143,8 +141,6 @@ project "CustomFontRenderer"
 	location "CustomFontRenderer"
 	kind "ConsoleApp"
 	staticruntime "on"
-	language "C++"
-	cppdialect "C++17"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")

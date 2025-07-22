@@ -9,7 +9,7 @@ namespace Engine
 	OpenGLContext::OpenGLContext(GLFWwindow* windowHandle)
 		: m_WindowHandle{ windowHandle }
 	{
-		ENGINE_CORE_ASSERT(windowHandle, "Window handle is null!")
+		ENGINE_CORE_ASSERT_MSG(windowHandle, "Window handle is null!")
 	}
 
 	void OpenGLContext::Init()
@@ -19,7 +19,7 @@ namespace Engine
 		glfwMakeContextCurrent(m_WindowHandle);
 		const int status{ gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)) };
 
-		ENGINE_CORE_ASSERT(status, "Failed to initialize Glad!");
+		ENGINE_CORE_ASSERT_MSG(status, "Failed to initialize Glad!");
 
 #if defined ENGINE_DEBUG
 		ENGINE_CORE_INFO("OpenGL Info:");
@@ -40,7 +40,7 @@ namespace Engine
 		ENGINE_CORE_INFO("| Version: {0}", versionStr);
 #endif
 
-		ENGINE_CORE_ASSERT(GLVersion.major > 4 || (GLVersion.major == 4 && GLVersion.minor >= 5), "Engine requires at least OpenGL version 4.5!");
+		ENGINE_CORE_ASSERT_MSG(GLVersion.major > 4 || (GLVersion.major == 4 && GLVersion.minor >= 5), "Engine requires at least OpenGL version 4.5!");
 	}
 
 	void OpenGLContext::SwapBuffers()

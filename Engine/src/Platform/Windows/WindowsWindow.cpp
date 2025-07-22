@@ -89,7 +89,7 @@ namespace Engine
             {
                 ENGINE_PROFILE_SCOPE("WindowsWindow::Init-glfwInit");
                 const int success{ glfwInit() };
-                ENGINE_CORE_ASSERT(success, "Could not initialize GLFW!");
+                ENGINE_CORE_ASSERT_MSG(success, "Could not initialize GLFW!");
             }
 
             glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_FALSE);
@@ -111,10 +111,10 @@ namespace Engine
             ENGINE_PROFILE_SCOPE("WindowsWindow::Init-glfwCreateWindow");
 
             GLFWmonitor* monitor{ glfwGetPrimaryMonitor() };
-            ENGINE_CORE_ASSERT(monitor, "Failed to get primary monitor!");
+            ENGINE_CORE_ASSERT_MSG(monitor, "Failed to get primary monitor!");
 
             const GLFWvidmode* videoMode{ glfwGetVideoMode(monitor) };
-            ENGINE_CORE_ASSERT(videoMode, "Failed to get video mode!");
+            ENGINE_CORE_ASSERT_MSG(videoMode, "Failed to get video mode!");
 
             if (props.fullScreen && monitor && videoMode)
             {

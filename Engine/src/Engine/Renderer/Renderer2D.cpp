@@ -752,7 +752,7 @@ namespace Engine
 			ENGINE_CORE_ASSERT_MSG(s_Data.textureSlotIndex >= 0, "textureIdx to low");
 
 			textureIdx = s_Data.textureSlotIndex;
-			s_Data.textureSlots[s_Data.textureSlotIndex] = texture;
+			s_Data.textureSlots[textureIdx] = texture;
 			s_Data.textureSlotIndex++;
 		}
 

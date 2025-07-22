@@ -30,7 +30,6 @@ namespace Engine
 
 		static Ref<spdlog::logger> s_CoreLogger;
 		static Ref<spdlog::logger> s_ClientLogger;
-
 	};
 }
 

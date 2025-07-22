@@ -14,7 +14,7 @@ namespace Engine
 			case ImageFormat::RGBA8: return GL_RGBA;
 			default:
 			{
-				ENGINE_CORE_ASSERT(false, "Invalid format");
+				ENGINE_CORE_ASSERT_MSG(false, "Invalid format");
 				return GL_NONE;
 			}
 		}
@@ -28,7 +28,7 @@ namespace Engine
 			case ImageFormat::RGBA8: return GL_RGBA8;
 			default:
 			{
-				ENGINE_CORE_ASSERT(false, "Invalid format");
+				ENGINE_CORE_ASSERT_MSG(false, "Invalid format");
 				return GL_NONE;
 			}
 		}
@@ -42,7 +42,7 @@ namespace Engine
 			case TextureFilter::Linear:  return GL_LINEAR;
 			default:
 			{
-				ENGINE_CORE_ASSERT(false, "Unknown TextureFilter!");
+				ENGINE_CORE_ASSERT_MSG(false, "Unknown TextureFilter!");
 				return GL_NONE;
 			}
 		}
@@ -58,7 +58,7 @@ namespace Engine
 			case TextureWrap::MirroredRepeat: return GL_MIRRORED_REPEAT;
 			default:
 			{
-				ENGINE_CORE_ASSERT(false, "Unknown TextureWrap!");
+				ENGINE_CORE_ASSERT_MSG(false, "Unknown TextureWrap!");
 				return GL_NONE;
 			}
 		}
@@ -74,7 +74,7 @@ namespace Engine
 	{
 		ENGINE_PROFILE_FUNCTION();
 
-		ENGINE_CORE_ASSERT(m_InternalFormat != GL_NONE && m_DataFormat != GL_NONE, "Invalid texture formats!");
+		ENGINE_CORE_ASSERT_MSG(m_InternalFormat != GL_NONE && m_DataFormat != GL_NONE, "Invalid texture formats!");
 
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
 		glTextureStorage2D(m_RendererID, 1, m_InternalFormat, m_Width, m_Height);
@@ -112,7 +112,7 @@ namespace Engine
 		if (!data)
 		{
 			ENGINE_CORE_ERROR("Failed to load image at path: {0}", path.c_str());
-			ENGINE_CORE_ASSERT(data, "Failed to load image!");
+			ENGINE_CORE_ASSERT_MSG(data, "Failed to load image!");
 			return;
 		}
 
@@ -140,12 +140,12 @@ namespace Engine
 			{
 				ENGINE_CORE_ERROR("Unsupported image format with {0} channels", channels);
 				stbi_image_free(data);
-				ENGINE_CORE_ASSERT(false, "Format not supported");
+				ENGINE_CORE_ASSERT_MSG(false, "Format not supported");
 				break;
 			}
 		}
 
-		ENGINE_CORE_ASSERT(m_InternalFormat != GL_NONE && m_DataFormat != GL_NONE, "Invalid texture formats!");
+		ENGINE_CORE_ASSERT_MSG(m_InternalFormat != GL_NONE && m_DataFormat != GL_NONE, "Invalid texture formats!");
 
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
 		glTextureStorage2D(m_RendererID, 1, m_InternalFormat, m_Width, m_Height);
@@ -192,7 +192,7 @@ namespace Engine
 	void OpenGLTexture2D::SetData(const void* data, uint32_t size)
 	{
 		const uint32_t bpp{ static_cast<uint32_t>(m_DataFormat == GL_RGBA ? 4 : 3) }; // bytes per pixel
-		ENGINE_CORE_ASSERT(size == m_Width * m_Height * bpp, "Data must be entire texture!");
+		ENGINE_CORE_ASSERT_MSG(size == m_Width * m_Height * bpp, "Data must be entire texture!");
 
 		glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
 	}
