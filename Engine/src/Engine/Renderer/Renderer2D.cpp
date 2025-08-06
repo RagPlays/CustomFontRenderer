@@ -917,7 +917,7 @@ namespace Engine
 
 			s_Data.lineShader->Bind();
 			RenderCommand::SetLineWidth(s_Data.lineWidth);
-			RenderCommand::DrawVertices(s_Data.lineVertexArray, s_Data.lineVertexCount);
+			RenderCommand::DrawVertices(s_Data.lineVertexArray, s_Data.lineVertexCount, RenderMode::Lines);
 #if RENDERER2D_STATISTICS
 			++s_Data.stats.drawCalls;
 #endif
