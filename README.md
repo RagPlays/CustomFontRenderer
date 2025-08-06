@@ -34,6 +34,6 @@ I created this custom font renderer to dive into the detailed workings of font r
 ```bat
 @echo off
 pushd ..\
-call vendor\premake\premake5.exe vs2022
+call premake\premake5.exe vs2022
 popd
 pause
